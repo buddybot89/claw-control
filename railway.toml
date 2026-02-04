@@ -7,7 +7,7 @@ builder = "nixpacks"
 [deploy]
 # Frontend: static site, just check root loads
 # Backend: has /health endpoint
-healthcheckPath = "/"
+healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 5

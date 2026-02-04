@@ -5,7 +5,7 @@
 cmds = ["cd ../.. && npm ci"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["npm run build", "echo 'OK' > dist/health"]
 
 [start]
 cmd = "cd ../.. && npx serve packages/frontend/dist -s -p $PORT"
