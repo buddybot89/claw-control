@@ -2,13 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* OpenClaw Premium Design System */
+/* OpenClaw EXACT Design System */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap');
 
 :root {
-  --coral-primary: #FF6B6B;
-  --coral-secondary: #FFB4A2;
-  --red-accent: #EF4444;
+  --coral: #FF6B6B;
+  --red: #EF4444;
 }
 
 body {
@@ -20,7 +19,8 @@ body {
   overflow-x: hidden;
 }
 
-/* Premium Space Background - Black to Burgundy gradient */
+/* ============ BACKGROUND ============ */
+/* Dark gradient: black → dark burgundy/red */
 .space-bg {
   position: fixed;
   top: 0;
@@ -31,10 +31,11 @@ body {
   background: 
     linear-gradient(180deg, 
       #000000 0%, 
-      #0a0000 20%,
-      #150508 40%,
-      #1a0a0d 60%,
-      #0f0506 80%,
+      #080204 15%,
+      #0f0508 30%,
+      #14080a 50%,
+      #0f0508 70%,
+      #080204 85%,
       #000000 100%
     );
 }
@@ -60,81 +61,83 @@ body {
 
 .stars::before {
   background-image: 
-    radial-gradient(1px 1px at 25px 35px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 50px 75px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 75px 165px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 100px 45px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 140px 85px, rgba(255, 107, 107, 0.5), transparent),
-    radial-gradient(1px 1px at 175px 130px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 210px 55px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 260px 205px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 300px 100px, rgba(255, 107, 107, 0.4), transparent),
-    radial-gradient(1px 1px at 340px 185px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 400px 65px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 450px 135px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 500px 210px, rgba(255, 107, 107, 0.5), transparent),
-    radial-gradient(1px 1px at 550px 45px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 600px 175px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 650px 95px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 700px 155px, rgba(255, 255, 255, 0.4), transparent);
-  background-size: 750px 250px;
-  animation: twinkle 8s ease-in-out infinite;
+    radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 50px 80px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 80px 150px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 110px 40px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 150px 90px, rgba(255, 107, 107, 0.5), transparent),
+    radial-gradient(1px 1px at 190px 130px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 230px 60px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 280px 180px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 330px 100px, rgba(255, 107, 107, 0.4), transparent),
+    radial-gradient(1px 1px at 380px 160px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 430px 50px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 490px 120px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 550px 200px, rgba(255, 107, 107, 0.5), transparent),
+    radial-gradient(1px 1px at 600px 70px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 660px 140px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 720px 90px, rgba(255, 255, 255, 0.5), transparent);
+  background-size: 800px 250px;
+  animation: twinkle 6s ease-in-out infinite;
 }
 
 .stars::after {
   background-image: 
-    radial-gradient(1px 1px at 120px 110px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 220px 160px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 320px 55px, rgba(255, 180, 162, 0.5), transparent),
-    radial-gradient(1px 1px at 420px 210px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 520px 105px, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 620px 190px, rgba(255, 255, 255, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 720px 85px, rgba(255, 107, 107, 0.4), transparent),
-    radial-gradient(1px 1px at 820px 145px, rgba(255, 255, 255, 0.4), transparent);
-  background-size: 900px 300px;
-  animation: twinkle 12s ease-in-out infinite reverse;
-  animation-delay: -4s;
+    radial-gradient(1px 1px at 100px 100px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 200px 160px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 300px 60px, rgba(255, 180, 162, 0.4), transparent),
+    radial-gradient(1px 1px at 400px 200px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 500px 110px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 600px 170px, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 700px 80px, rgba(255, 107, 107, 0.4), transparent),
+    radial-gradient(1px 1px at 800px 150px, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 900px 280px;
+  animation: twinkle 10s ease-in-out infinite reverse;
+  animation-delay: -3s;
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.7; }
+  0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
 
-/* Gradient Text - Red to Coral */
-.gradient-text {
-  background: linear-gradient(135deg, #EF4444 0%, #FF6B6B 40%, #FFB4A2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* ============ TYPOGRAPHY ============ */
 
-.gradient-text-coral {
-  background: linear-gradient(90deg, #FF6B6B 0%, #FFB4A2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Display Font for Logo */
+/* Display font for title */
 .font-display {
   font-family: 'Playfair Display', Georgia, serif;
 }
 
-/* Premium Card Styles */
-.glass-card {
+/* Gradient Text - Red → Coral → Orange */
+.gradient-text {
+  background: linear-gradient(135deg, #EF4444 0%, #FF6B6B 50%, #FFAB91 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Spaced uppercase tagline */
+.tagline {
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ============ CARDS ============ */
+
+/* Testimonial cards - dark translucent */
+.testimonial-card {
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
 }
 
-.glass-card:hover {
-  border-color: rgba(255, 107, 107, 0.2);
-  background: rgba(0, 0, 0, 0.5);
+.testimonial-card:hover {
+  border-color: rgba(255, 107, 107, 0.15);
 }
 
-/* Feature Card */
+/* Feature cards */
 .feature-card {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -142,84 +145,41 @@ body {
 }
 
 .feature-card:hover {
-  border-color: rgba(255, 107, 107, 0.15);
-  background: rgba(10, 10, 10, 0.6);
+  border-color: rgba(255, 107, 107, 0.2);
   transform: translateY(-2px);
 }
 
-/* Testimonial Cards */
-.testimonial-card {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
+/* Press/Built For cards */
+.press-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* NEW Pill Badge */
+/* ============ BUTTONS & PILLS ============ */
+
+/* NEW pill badge */
 .pill-new {
   background: linear-gradient(135deg, #EF4444 0%, #FF6B6B 100%);
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 9999px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
-/* Pill Button (Introducing banner) */
+/* Introducing pill button */
 .pill-button {
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(255, 107, 107, 0.25);
   transition: all 0.3s ease;
 }
 
 .pill-button:hover {
-  background: rgba(255, 107, 107, 0.1);
-  border-color: rgba(255, 107, 107, 0.5);
-}
-
-/* Tab selector */
-.tab-active {
-  background: rgba(255, 107, 107, 0.15);
+  background: rgba(255, 107, 107, 0.08);
   border-color: rgba(255, 107, 107, 0.4);
-  color: #FF6B6B;
 }
 
-.tab-inactive {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #9CA3AF;
-}
-
-.tab-inactive:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-/* Terminal Code Block */
-.terminal {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: 'SF Mono', 'Fira Code', 'Monaco', monospace;
-}
-
-.terminal-header {
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Integration Badge */
-.integration-badge {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
-}
-
-.integration-badge:hover {
-  border-color: rgba(255, 107, 107, 0.3);
-  background: rgba(0, 0, 0, 0.5);
-}
-
-/* Button Styles */
+/* Primary button */
 .btn-primary {
   background: linear-gradient(135deg, #EF4444 0%, #FF6B6B 100%);
   transition: all 0.3s ease;
@@ -227,10 +187,11 @@ body {
 
 .btn-primary:hover {
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8888 100%);
-  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);
   transform: translateY(-1px);
 }
 
+/* Secondary button */
 .btn-secondary {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -242,14 +203,46 @@ body {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Spaced uppercase tagline */
-.tagline {
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  font-weight: 500;
+/* ============ TERMINAL ============ */
+
+.terminal {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Newsletter input */
+.terminal-header {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============ INTEGRATION BADGES ============ */
+
+.integration-badge {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.integration-badge:hover {
+  border-color: rgba(255, 107, 107, 0.25);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ============ FOOTER ICONS ============ */
+
+.footer-icon-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.footer-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============ NEWSLETTER ============ */
+
 .newsletter-input {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -260,18 +253,12 @@ body {
   border-color: rgba(255, 107, 107, 0.5);
 }
 
-/* Smooth scrolling */
+/* ============ UTILITIES ============ */
+
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
 ::selection {
   background: rgba(255, 107, 107, 0.3);
-}
-
-/* Press card */
-.press-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }

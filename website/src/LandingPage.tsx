@@ -1,12 +1,11 @@
 /**
  * @fileoverview Landing Page for Claw Control
  * 
- * Premium design matching OpenClaw.ai exact structure
+ * EXACT match of OpenClaw.ai design structure
  */
 
 import { motion } from 'framer-motion';
 import {
-  Zap,
   LayoutGrid,
   MessageSquare,
   Bot,
@@ -16,7 +15,9 @@ import {
   Github,
   Copy,
   Check,
-  Clock,
+  Database,
+  Gauge,
+  Puzzle,
   BookOpen,
   MessageCircle,
 } from 'lucide-react';
@@ -31,38 +32,35 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 }
+    transition: { staggerChildren: 0.06 }
   }
 };
 
 // ============ Components ============
 
-function CodeBlock({ code, showHeader = true }: { code: string; showHeader?: boolean }) {
+function Terminal({ command }: { command: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
+    await navigator.clipboard.writeText(command);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="terminal rounded-xl overflow-hidden">
-      {showHeader && (
-        <div className="terminal-header px-4 py-3 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-        </div>
-      )}
+      <div className="terminal-header px-4 py-3 flex items-center gap-2">
+        <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+        <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+        <div className="w-3 h-3 rounded-full bg-[#27CA3F]" />
+      </div>
       <div className="flex items-center justify-between px-5 py-4">
-        <code className="text-sm text-gray-300">
-          <span className="text-gray-500">$</span> {code}
+        <code className="text-sm text-gray-300 font-mono">
+          <span className="text-[#FF6B6B]">$</span> {command}
         </code>
         <button
           onClick={handleCopy}
           className="ml-4 p-2 hover:bg-white/5 rounded-lg transition-colors"
-          title="Copy"
         >
           {copied ? (
             <Check className="w-4 h-4 text-green-400" />
@@ -75,6 +73,7 @@ function CodeBlock({ code, showHeader = true }: { code: string; showHeader?: boo
   );
 }
 
+// Feature Card
 interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
@@ -87,7 +86,7 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
       variants={fadeIn}
       className="feature-card p-6 rounded-2xl"
     >
-      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/10 flex items-center justify-center mb-4">
+      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B6B]/20 to-[#EF4444]/10 flex items-center justify-center mb-4">
         <span className="text-[#FF6B6B]">{icon}</span>
       </div>
       <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
@@ -96,7 +95,7 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
   );
 }
 
-// Testimonial Data
+// Testimonials
 const testimonials = [
   {
     avatar: "🧑‍💻",
@@ -114,7 +113,7 @@ const testimonials = [
     avatar: "🚀",
     name: "Indie Hacker",
     handle: "@shipper",
-    quote: "Deployed in 2 minutes on Railway. Now I can finally stop asking my agents 'what are you working on?' every 5 minutes.",
+    quote: "Deployed in 2 minutes on Railway. Now I can stop asking my agents 'what are you working on?' every 5 minutes 😅",
   },
 ];
 
@@ -125,10 +124,12 @@ function TestimonialCard({ avatar, name, handle, quote }: typeof testimonials[0]
       className="testimonial-card p-6 rounded-2xl"
     >
       <div className="flex items-center gap-3 mb-4">
-        <div className="text-3xl">{avatar}</div>
+        <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl">
+          {avatar}
+        </div>
         <div>
-          <div className="font-semibold text-white">{name}</div>
-          <div className="text-sm text-gray-500">{handle}</div>
+          <div className="font-semibold text-white text-sm">{name}</div>
+          <div className="text-sm text-[#FF6B6B]">{handle}</div>
         </div>
       </div>
       <p className="text-gray-300 text-sm leading-relaxed">"{quote}"</p>
@@ -136,51 +137,70 @@ function TestimonialCard({ avatar, name, handle, quote }: typeof testimonials[0]
   );
 }
 
-// Integration icons with names
+// Integration badges
 const integrations = [
   { name: "OpenClaw", icon: "🦞" },
   { name: "Railway", icon: "🚂" },
   { name: "Docker", icon: "🐳" },
   { name: "Claude", icon: "🤖" },
-  { name: "GPT-4", icon: "✨" },
-  { name: "Telegram", icon: "💬" },
+  { name: "GPT", icon: "✨" },
+  { name: "Telegram", icon: "📱" },
   { name: "Discord", icon: "🎮" },
   { name: "Slack", icon: "💼" },
   { name: "GitHub", icon: "🐙" },
+  { name: "REST API", icon: "🔌" },
+  { name: "Webhooks", icon: "🪝" },
+  { name: "SSE", icon: "📡" },
   { name: "Vercel", icon: "▲" },
+  { name: "Fly.io", icon: "🪁" },
 ];
 
 function IntegrationBadge({ name, icon }: { name: string; icon: string }) {
   return (
     <motion.div
       variants={fadeIn}
-      className="integration-badge px-4 py-3 rounded-xl flex items-center gap-2"
+      className="integration-badge px-4 py-2.5 rounded-full flex items-center gap-2"
     >
-      <span className="text-xl">{icon}</span>
-      <span className="text-sm text-gray-300 font-medium">{name}</span>
+      <span className="text-lg">{icon}</span>
+      <span className="text-sm text-gray-300">{name}</span>
     </motion.div>
   );
 }
 
-// ============ Main Landing Page ============
+// Press/Built For cards
+const pressItems = [
+  {
+    icon: "🤖",
+    title: "AI Developers",
+    description: "Building multi-agent systems and AI workflows",
+  },
+  {
+    icon: "🏢",
+    title: "Startups",
+    description: "Running AI-powered automation at scale",
+  },
+];
+
+// ============ Main Component ============
 
 export function LandingPage() {
-  const [activeTab, setActiveTab] = useState<'railway' | 'clawhub' | 'git'>('railway');
+  const [activeTab, setActiveTab] = useState<'railway' | 'npm' | 'docker' | 'git'>('railway');
 
-  const installCommands = {
-    railway: 'Click the Deploy button below',
-    clawhub: 'npx clawhub install claw-control',
-    git: 'git clone https://github.com/adarshmishra07/claw-control',
+  const commands: Record<string, string> = {
+    railway: 'railway up',
+    npm: 'npx clawhub install claw-control',
+    docker: 'docker run -p 3000:3000 ghcr.io/adarshmishra07/claw-control',
+    git: 'git clone https://github.com/adarshmishra07/claw-control && cd claw-control && npm start',
   };
 
   return (
     <div className="min-h-screen text-white relative">
-      {/* Space Background */}
+      {/* Background */}
       <div className="space-bg" />
       <div className="stars" />
 
-      {/* ============ HERO SECTION ============ */}
-      <section className="pt-24 pb-16 px-4">
+      {/* ======== HERO ======== */}
+      <section className="pt-20 pb-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial="hidden"
@@ -190,37 +210,36 @@ export function LandingPage() {
           >
             {/* 1. Lobster Logo */}
             <motion.div 
-              className="mb-8"
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="mb-6"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
-              <span className="text-7xl sm:text-8xl">🦞</span>
+              <span className="text-7xl sm:text-8xl filter drop-shadow-lg">🦞</span>
             </motion.div>
 
-            {/* 2. Main Title - Display Font */}
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold mb-5 tracking-tight">
+            {/* 2. Title - Serif + Gradient */}
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-black mb-4 tracking-tight">
               <span className="gradient-text">Claw Control</span>
             </h1>
             
-            {/* 3. Tagline - Spaced Uppercase */}
-            <p className="tagline text-[#FF6B6B] text-sm sm:text-base mb-6">
-              Kanban for AI Agents.
+            {/* 3. Tagline - SPACED UPPERCASE */}
+            <p className="tagline text-[#FF6B6B] text-xs sm:text-sm mb-6 tracking-[0.3em]">
+              THE DASHBOARD FOR AI AGENT TEAMS.
             </p>
             
             {/* 4. Description */}
-            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-              A beautiful dashboard to coordinate your AI agent team. 
-              Track tasks, monitor status, and watch your agents work in real-time.
+            <p className="text-base sm:text-lg text-gray-400 mb-8 max-w-xl mx-auto leading-relaxed">
+              A beautiful kanban board to coordinate your AI agents. 
+              Track tasks, monitor status, and watch your team work in real-time.
             </p>
 
-            {/* 5. NEW Pill Button */}
+            {/* 5. NEW Pill + Introducing Button */}
             <motion.a
-              href="https://github.com/adarshmishra07/claw-control"
+              href="https://github.com/adarshmishra07/claw-control/releases"
               target="_blank"
               rel="noopener noreferrer"
-              className="pill-button inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-10"
+              className="pill-button inline-flex items-center gap-3 px-5 py-2.5 rounded-full"
               whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               <span className="pill-new text-white">NEW</span>
               <span className="text-gray-300 text-sm">Introducing Claw Control</span>
@@ -230,25 +249,25 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ============ 6. WHAT PEOPLE SAY ============ */}
+      {/* ======== 6. WHAT PEOPLE SAY ======== */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-10"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-10"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">What People Say</h2>
-          </motion.div>
+            What People Say
+          </motion.h2>
 
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-5"
+            className="grid md:grid-cols-3 gap-4"
           >
             {testimonials.map((t, i) => (
               <TestimonialCard key={i} {...t} />
@@ -257,19 +276,18 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ============ 7. QUICK START ============ */}
+      {/* ======== 7. QUICK START ======== */}
       <section className="py-16 px-4">
-        <div className="max-w-3xl mx-auto">
-          <motion.div
+        <div className="max-w-2xl mx-auto">
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-8"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-8"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Quick Start</h2>
-            <p className="text-gray-500">Get running in under 2 minutes</p>
-          </motion.div>
+            Quick Start
+          </motion.h2>
 
           {/* Tab Selector */}
           <motion.div
@@ -277,18 +295,21 @@ export function LandingPage() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="flex justify-center gap-2 mb-6"
+            className="flex flex-wrap justify-center gap-2 mb-6"
           >
             {[
-              { id: 'railway', label: 'Railway' },
-              { id: 'clawhub', label: 'ClawHub' },
-              { id: 'git', label: 'Git Clone' },
+              { id: 'railway', label: 'One-Click' },
+              { id: 'npm', label: 'npm' },
+              { id: 'docker', label: 'Docker' },
+              { id: 'git', label: 'Self-Host' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${
-                  activeTab === tab.id ? 'tab-active' : 'tab-inactive'
+                  activeTab === tab.id 
+                    ? 'bg-[#FF6B6B]/15 border-[#FF6B6B]/40 text-[#FF6B6B]' 
+                    : 'bg-transparent border-white/10 text-gray-400 hover:border-white/20 hover:text-white'
                 }`}
               >
                 {tab.label}
@@ -296,7 +317,7 @@ export function LandingPage() {
             ))}
           </motion.div>
 
-          {/* Terminal */}
+          {/* Terminal / Deploy Button */}
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -309,108 +330,88 @@ export function LandingPage() {
                   href="https://railway.com/deploy/_odwJ4?referralCode=VsZvQs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block"
                 >
                   <img 
                     src="https://railway.com/button.svg" 
                     alt="Deploy on Railway" 
-                    className="h-12 opacity-90 hover:opacity-100 transition-opacity"
+                    className="h-12 mx-auto hover:opacity-90 transition-opacity"
                   />
                 </a>
-                <p className="text-gray-500 text-sm mt-4">One click. No config. Done in 2 minutes.</p>
+                <p className="text-gray-500 text-sm mt-4">Click → Configure → Done in 2 minutes</p>
               </div>
             ) : (
-              <div>
-                <CodeBlock code={installCommands[activeTab]} />
-                {activeTab === 'clawhub' && (
-                  <p className="text-center text-gray-500 text-sm mt-4">
-                    <a href="https://clawhub.ai/adarshmishra07/claw-control" className="text-[#FF6B6B] hover:underline">
-                      View on ClawHub →
-                    </a>
-                  </p>
-                )}
-                {activeTab === 'git' && (
-                  <p className="text-center text-gray-500 text-sm mt-4">
-                    Then run <code className="text-gray-400">docker-compose up</code> or follow the{' '}
-                    <a href="https://github.com/adarshmishra07/claw-control#quick-start" className="text-[#FF6B6B] hover:underline">
-                      README →
-                    </a>
-                  </p>
-                )}
-              </div>
+              <Terminal command={commands[activeTab]} />
             )}
           </motion.div>
         </div>
       </section>
 
-      {/* ============ 8. WHAT IT DOES (Features) ============ */}
+      {/* ======== 8. WHAT IT DOES ======== */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-10"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-10"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">What It Does</h2>
-            <p className="text-gray-500">Everything you need to coordinate your AI team</p>
-          </motion.div>
+            What It Does
+          </motion.h2>
 
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <FeatureCard
               icon={<LayoutGrid className="w-5 h-5" />}
               title="Kanban Board"
-              description="Drag-and-drop task management. Backlog → Todo → In Progress → Review → Done."
+              description="Drag-and-drop tasks across columns. Backlog → Todo → In Progress → Review → Done."
             />
             <FeatureCard
               icon={<Bot className="w-5 h-5" />}
               title="Agent Tracking"
-              description="See which agents are working, idle, or offline. Real-time status updates."
+              description="See which agents are working, idle, or offline. Real-time status with colored indicators."
             />
             <FeatureCard
               icon={<MessageSquare className="w-5 h-5" />}
               title="Live Feed"
-              description="Watch agent communications in real-time. Never miss an update."
+              description="Watch agent communications as they happen. Never miss an important update."
             />
             <FeatureCard
-              icon={<Zap className="w-5 h-5" />}
-              title="SSE Updates"
-              description="Instant sync via Server-Sent Events. No refresh needed."
+              icon={<Gauge className="w-5 h-5" />}
+              title="Real-Time Sync"
+              description="Instant updates via Server-Sent Events. No manual refresh needed."
             />
             <FeatureCard
               icon={<Users className="w-5 h-5" />}
-              title="Multi-Agent"
-              description="Coordinate entire teams. Assign specialists to different tasks."
+              title="Multi-Agent Teams"
+              description="Coordinate entire teams. Assign specialists to tasks by their strengths."
             />
             <FeatureCard
-              icon={<Clock className="w-5 h-5" />}
-              title="Mobile Ready"
-              description="Fully responsive. Check on your agents from anywhere."
+              icon={<Database className="w-5 h-5" />}
+              title="Persistent State"
+              description="SQLite database keeps your tasks and history. Survives restarts."
             />
           </motion.div>
         </div>
       </section>
 
-      {/* ============ 9. WORKS WITH EVERYTHING ============ */}
+      {/* ======== 9. WORKS WITH EVERYTHING ======== */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-10"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-10"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Works With Everything</h2>
-            <p className="text-gray-500">Integrate with your existing stack</p>
-          </motion.div>
+            Works With Everything
+          </motion.h2>
 
           <motion.div
             initial="hidden"
@@ -426,114 +427,110 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ============ 10. BUILT FOR (replaces Featured In) ============ */}
+      {/* ======== 10. FEATURED IN / BUILT FOR ======== */}
       <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
+        <div className="max-w-3xl mx-auto">
+          <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="text-center mb-10"
+            className="text-2xl sm:text-3xl font-bold text-white text-center mb-10"
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Built For</h2>
-          </motion.div>
+            Built For
+          </motion.h2>
 
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid sm:grid-cols-3 gap-4"
+            className="grid sm:grid-cols-2 gap-4"
           >
-            <motion.div variants={fadeIn} className="press-card p-6 rounded-2xl text-center">
-              <div className="text-3xl mb-3">🤖</div>
-              <h3 className="font-semibold text-white mb-1">AI Developers</h3>
-              <p className="text-gray-500 text-sm">Building multi-agent systems</p>
-            </motion.div>
-            <motion.div variants={fadeIn} className="press-card p-6 rounded-2xl text-center">
-              <div className="text-3xl mb-3">🏢</div>
-              <h3 className="font-semibold text-white mb-1">Startups</h3>
-              <p className="text-gray-500 text-sm">Running AI-powered workflows</p>
-            </motion.div>
-            <motion.div variants={fadeIn} className="press-card p-6 rounded-2xl text-center">
-              <div className="text-3xl mb-3">🔬</div>
-              <h3 className="font-semibold text-white mb-1">Researchers</h3>
-              <p className="text-gray-500 text-sm">Coordinating experiments</p>
-            </motion.div>
+            {pressItems.map((item, i) => (
+              <motion.div 
+                key={i}
+                variants={fadeIn}
+                className="press-card p-6 rounded-2xl flex items-start gap-4"
+              >
+                <div className="text-3xl">{item.icon}</div>
+                <div>
+                  <h3 className="font-semibold text-white mb-1">{item.title}</h3>
+                  <p className="text-gray-500 text-sm">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* ============ 11. FOOTER BUTTONS ============ */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
+      {/* ======== 11. FOOTER ICONS ======== */}
+      <section className="py-12 px-4">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeIn}
+          className="flex justify-center gap-4"
+        >
+          <a
+            href="https://github.com/adarshmishra07/claw-control/discussions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon-btn p-4 rounded-xl"
+            title="Discussions"
+          >
+            <MessageCircle className="w-6 h-6 text-gray-400 hover:text-white transition-colors" />
+          </a>
+          <a
+            href="https://github.com/adarshmishra07/claw-control#readme"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon-btn p-4 rounded-xl"
+            title="Documentation"
+          >
+            <BookOpen className="w-6 h-6 text-gray-400 hover:text-white transition-colors" />
+          </a>
+          <a
+            href="https://github.com/adarshmishra07/claw-control"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon-btn p-4 rounded-xl"
+            title="GitHub"
+          >
+            <Github className="w-6 h-6 text-gray-400 hover:text-white transition-colors" />
+          </a>
+          <a
+            href="https://clawhub.ai/adarshmishra07/claw-control"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-icon-btn p-4 rounded-xl"
+            title="ClawHub"
+          >
+            <span className="text-2xl opacity-60 hover:opacity-100 transition-opacity">🦞</span>
+          </a>
+        </motion.div>
+      </section>
+
+      {/* ======== 12. STAY IN THE LOOP ======== */}
+      <section className="py-12 px-4">
+        <div className="max-w-md mx-auto text-center">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeIn}
-            className="flex flex-wrap justify-center gap-4"
           >
-            <a
-              href="https://github.com/adarshmishra07/claw-control/discussions"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary px-6 py-3 rounded-xl flex items-center gap-2 text-white font-medium"
-            >
-              <MessageCircle className="w-5 h-5" />
-              Discussions
-            </a>
-            <a
-              href="https://github.com/adarshmishra07/claw-control/blob/main/docs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary px-6 py-3 rounded-xl flex items-center gap-2 text-white font-medium"
-            >
-              <BookOpen className="w-5 h-5" />
-              Documentation
-            </a>
-            <a
-              href="https://github.com/adarshmishra07/claw-control"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary px-6 py-3 rounded-xl flex items-center gap-2 text-white font-medium"
-            >
-              <Github className="w-5 h-5" />
-              GitHub
-            </a>
-            <a
-              href="https://clawhub.ai/adarshmishra07/claw-control"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary px-6 py-3 rounded-xl flex items-center gap-2 text-white font-medium"
-            >
-              <span className="text-lg">🦞</span>
-              ClawHub
-            </a>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ============ 12. STAY IN THE LOOP ============ */}
-      <section className="py-16 px-4">
-        <div className="max-w-xl mx-auto text-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn}
-          >
-            <h2 className="text-2xl font-bold text-white mb-3">Stay in the Loop</h2>
-            <p className="text-gray-500 mb-6">Get updates on new features and releases</p>
+            <h2 className="text-xl font-bold text-white mb-3">Stay in the Loop</h2>
+            <p className="text-gray-500 text-sm mb-5">Updates on new features and releases</p>
             
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <input
                 type="email"
                 placeholder="you@email.com"
-                className="newsletter-input flex-1 px-4 py-3 rounded-xl text-white placeholder-gray-500"
+                className="newsletter-input flex-1 px-4 py-3 rounded-xl text-white text-sm placeholder-gray-500"
               />
-              <button className="btn-primary px-6 py-3 rounded-xl text-white font-semibold">
+              <button className="btn-primary px-5 py-3 rounded-xl text-white font-semibold text-sm">
                 Subscribe
               </button>
             </div>
@@ -541,8 +538,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ============ CTA ============ */}
-      <section className="py-20 px-4">
+      {/* ======== CTA ======== */}
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial="hidden"
@@ -553,15 +550,15 @@ export function LandingPage() {
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               <span className="gradient-text">Ready to Coordinate?</span>
             </h2>
-            <p className="text-gray-400 mb-8 text-lg">
-              Open source, self-hosted, and free forever.
+            <p className="text-gray-400 mb-8">
+              Open source • Self-hosted • Free forever
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="https://railway.com/deploy/_odwJ4?referralCode=VsZvQs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary px-8 py-4 rounded-xl flex items-center gap-2 text-white font-semibold text-lg"
+                className="btn-primary px-8 py-4 rounded-xl flex items-center gap-2 text-white font-semibold"
               >
                 <Rocket className="w-5 h-5" />
                 Deploy on Railway
@@ -570,7 +567,7 @@ export function LandingPage() {
                 href="https://github.com/adarshmishra07/claw-control"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-secondary px-8 py-4 rounded-xl flex items-center gap-2 text-white font-semibold text-lg"
+                className="btn-secondary px-8 py-4 rounded-xl flex items-center gap-2 text-white font-semibold"
               >
                 <Github className="w-5 h-5" />
                 Star on GitHub
@@ -580,23 +577,20 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ============ 13. FOOTER ============ */}
-      <footer className="border-t border-white/5 py-10 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+      {/* ======== 13. FOOTER ======== */}
+      <footer className="border-t border-white/5 py-8 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">🦞</span>
+              <span className="text-xl">🦞</span>
               <span className="font-semibold text-white">Claw Control</span>
             </div>
-            <div className="flex items-center gap-8 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+              <a href="https://github.com/adarshmishra07/claw-control#readme" className="hover:text-[#FF6B6B] transition-colors">Docs</a>
               <a href="https://github.com/adarshmishra07/claw-control" className="hover:text-[#FF6B6B] transition-colors">GitHub</a>
               <a href="https://clawhub.ai/adarshmishra07/claw-control" className="hover:text-[#FF6B6B] transition-colors">ClawHub</a>
-              <a href="https://github.com/adarshmishra07/claw-control/blob/main/docs" className="hover:text-[#FF6B6B] transition-colors">Docs</a>
               <a href="https://github.com/adarshmishra07/claw-control/blob/main/LICENSE" className="hover:text-[#FF6B6B] transition-colors">MIT License</a>
             </div>
-          </div>
-          <div className="text-center mt-8 text-gray-600 text-sm">
-            Built with ❤️ for the AI agent community
           </div>
         </div>
       </footer>
