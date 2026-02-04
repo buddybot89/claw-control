@@ -27,7 +27,8 @@
   * [Browser Control](integrations/browser.md)
 
 * **Deployment**
-  * [Railway](deployment/railway.md)
+  * [Railway One-Click](railway-template.md)
+  * [Full Deployment Guide](deployment.md)
   * [Docker](deployment/docker.md)
   * [Manual Setup](deployment/manual.md)
 

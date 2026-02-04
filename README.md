@@ -10,6 +10,8 @@
 [![Fastify](https://img.shields.io/badge/Fastify-5.x-000000?style=flat-square&logo=fastify&logoColor=white)](https://fastify.dev/)
 ![Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/claw-control)
+
 Claw Control is a beautiful, real-time mission control dashboard for managing AI agent workflows. Track tasks, monitor agent status, and coordinate your AI team through an intuitive Kanban interface with live updates.
 
 ---
@@ -140,7 +142,13 @@ Visit `http://localhost:5173` - you're ready to go! 🎉
 docker-compose -f docker-compose.yml -f docker-compose.sqlite.yml up -d --scale db=0
 ```
 
-### Option 4: Manual PostgreSQL Setup
+### Option 4: Railway (One-Click Cloud Deploy)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/claw-control)
+
+Deploy to Railway with zero configuration. See the full [Railway Template Guide](docs/railway-template.md) for details.
+
+### Option 5: Manual PostgreSQL Setup
 
 ```bash
 # Clone the repo
