@@ -356,7 +356,7 @@ export function LandingPage() {
                 <h3 className="text-xl font-semibold mb-2">Connect Your Agents</h3>
                 <p className="text-gray-400">Point your AI agents to the API. They report status automatically.</p>
                 <CodeBlock 
-                  code='curl -X POST $URL/api/agents/1 -d \'{"status": "working"}\'' 
+                  code={`curl -X POST $URL/api/agents/1 -d '{"status": "working"}'`}
                   label="Update agent status"
                 />
               </div>
