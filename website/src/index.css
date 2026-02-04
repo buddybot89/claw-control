@@ -3,7 +3,16 @@
 @tailwind utilities;
 
 /* OpenClaw EXACT Design System */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Cal Sans - from https://github.com/calcom/font */
+@font-face {
+  font-family: 'Cal Sans';
+  src: url('https://cal.com/cal-sans/CalSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --coral: #FF6B6B;
@@ -105,7 +114,7 @@ body {
 
 /* Display font for title */
 .font-display {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Cal Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Gradient Text - Red → Coral → Orange */
