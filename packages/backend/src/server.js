@@ -1,6 +1,7 @@
 const fastify = require('fastify')({ logger: true });
 const cors = require('@fastify/cors');
 const pool = require('./db');
+const { loadAgentsConfig, getConfigPath, CONFIG_PATHS } = require('./config-loader');
 
 // Store active SSE clients
 let clients = [];
@@ -431,6 +432,112 @@ fastify.get('/health', async (request, reply) => {
   }
 });
 
+// ============ CONFIG API ============
+
+// POST /api/config/reload - Reload agents from YAML config
+fastify.post('/api/config/reload', async (request, reply) => {
+  const { force = false } = request.body || {};
+  
+  try {
+    const agents = loadAgentsConfig();
+    const configPath = getConfigPath();
+    
+    if (force) {
+      // Force mode: Clear all agents and recreate from config
+      await pool.query('DELETE FROM agents');
+      console.log('🗑️  Cleared existing agents (force mode)');
+    }
+    
+    // Check existing agents
+    const { rows: existing } = await pool.query('SELECT name FROM agents');
+    const existingNames = new Set(existing.map(a => a.name));
+    
+    let created = 0;
+    let skipped = 0;
+    
+    for (const agent of agents) {
+      if (existingNames.has(agent.name) && !force) {
+        skipped++;
+        continue;
+      }
+      
+      await pool.query(
+        `INSERT INTO agents (name, description, role, status) 
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (name) DO UPDATE SET
+           description = EXCLUDED.description,
+           role = EXCLUDED.role`,
+        [agent.name, agent.description, agent.role, agent.status]
+      );
+      created++;
+    }
+    
+    // Fetch updated agents list
+    const { rows: updatedAgents } = await pool.query('SELECT * FROM agents ORDER BY created_at');
+    
+    // Broadcast the update
+    broadcast('agents-reloaded', { agents: updatedAgents });
+    
+    return {
+      success: true,
+      message: `Config reloaded from ${configPath || 'defaults'}`,
+      configPath,
+      created,
+      skipped,
+      total: updatedAgents.length,
+      agents: updatedAgents
+    };
+    
+  } catch (err) {
+    console.error('Config reload error:', err);
+    return reply.status(500).send({ 
+      success: false, 
+      error: err.message 
+    });
+  }
+});
+
+// GET /api/config/status - Get config file status
+fastify.get('/api/config/status', async (request, reply) => {
+  const configPath = getConfigPath();
+  
+  return {
+    configPath,
+    configFound: !!configPath,
+    searchedPaths: CONFIG_PATHS
+  };
+});
+
+// ============ AUTO-SEED FROM CONFIG ============
+
+async function seedAgentsFromConfig() {
+  try {
+    const { rows } = await pool.query('SELECT COUNT(*) as count FROM agents');
+    const count = parseInt(rows[0].count);
+    
+    if (count === 0) {
+      console.log('📦 No agents found in database. Seeding from config...');
+      const agents = loadAgentsConfig();
+      
+      for (const agent of agents) {
+        await pool.query(
+          `INSERT INTO agents (name, description, role, status) 
+           VALUES ($1, $2, $3, $4)`,
+          [agent.name, agent.description, agent.role, agent.status]
+        );
+        console.log(`   ✅ Created agent: ${agent.name} (${agent.role})`);
+      }
+      
+      console.log(`📦 Seeded ${agents.length} agents from config`);
+    } else {
+      console.log(`📦 Found ${count} existing agents. Skipping seed.`);
+    }
+  } catch (err) {
+    console.error('Agent seeding error:', err);
+    // Don't throw - let server start anyway
+  }
+}
+
 // Start Server
 const start = async () => {
   try {
@@ -439,6 +546,9 @@ const start = async () => {
     // Verify database connection
     await pool.query('SELECT 1');
     console.log('Database connection verified');
+    
+    // Seed agents from YAML config if table is empty
+    await seedAgentsFromConfig();
     
     await fastify.listen({ port: PORT, host: '0.0.0.0' });
     console.log(`Server running on port ${PORT}`);

@@ -119,6 +119,66 @@ GET /api/stream - Server-Sent Events stream
 
 Events: `task-created`, `task-updated`, `task-deleted`, `agent-updated`, `message-created`
 
+## ⚙️ Agent Configuration
+
+Claw Control uses a YAML file to define your agents. Edit `config/agents.yaml` to customize your team:
+
+```yaml
+# config/agents.yaml
+agents:
+  - name: "Goku"
+    description: "Main coordinator - delegates tasks"
+    role: "Coordinator"
+    avatar: "🥋"
+
+  - name: "Vegeta"
+    description: "Backend specialist - APIs, databases"
+    role: "Backend"
+    avatar: "💪"
+
+  - name: "Bulma"
+    description: "DevOps & Frontend - infrastructure, UI"
+    role: "DevOps"
+    avatar: "🔧"
+```
+
+### Config Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | ✅ | Display name for the agent |
+| `description` | ❌ | What this agent does |
+| `role` | ❌ | Agent role/specialty (default: "Agent") |
+| `avatar` | ❌ | Emoji or image path (default: "🤖") |
+| `status` | ❌ | Initial status: idle, working, offline (default: "idle") |
+
+### How It Works
+
+1. **On first startup**: If no agents exist in the database, they're seeded from `config/agents.yaml`
+2. **No config file?**: Falls back to default agents
+3. **Docker**: Config is mounted as a volume - edit without rebuilding!
+
+### Reload Config (Hot Reload)
+
+Reload agents from config without restarting:
+
+```bash
+# Add new agents from config (won't overwrite existing)
+curl -X POST http://localhost:3001/api/config/reload
+
+# Force reload - clear all agents and recreate from config
+curl -X POST http://localhost:3001/api/config/reload \
+  -H "Content-Type: application/json" \
+  -d '{"force": true}'
+```
+
+### Config API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/config/reload` | Reload agents from YAML |
+| GET | `/api/config/status` | Check config file status |
+
 ## 🎛️ Environment Variables
 
 ### Backend
