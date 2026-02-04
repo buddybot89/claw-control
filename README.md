@@ -151,6 +151,63 @@ GET /api/stream - Server-Sent Events stream
 
 Events: `task-created`, `task-updated`, `task-deleted`, `agent-updated`, `message-created`
 
+## 🔐 Authentication
+
+Claw Control supports optional API key authentication for production deployments.
+
+### Modes
+
+| Mode | API_KEY | Behavior |
+|------|---------|----------|
+| **Open** | Empty/unset | All operations public (default, for local dev) |
+| **Protected** | Set | Write operations require valid API key |
+
+### Protected Operations
+
+When authentication is enabled:
+- **Require auth:** POST, PUT, DELETE, PATCH operations
+- **Public:** GET operations (read-only), SSE stream, health check
+
+### Configuration
+
+Set the `API_KEY` environment variable:
+
+```env
+# Generate a secure key
+API_KEY=$(openssl rand -hex 32)
+```
+
+### Using the API Key
+
+Include the key in your requests using either header:
+
+```bash
+# Option 1: Authorization Bearer token
+curl -X POST http://localhost:3001/api/tasks \
+  -H "Authorization: Bearer your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "New task"}'
+
+# Option 2: X-API-Key header
+curl -X POST http://localhost:3001/api/tasks \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "New task"}'
+```
+
+### Check Auth Status
+
+```bash
+# Check if auth is enabled
+curl http://localhost:3001/api/auth/status
+
+# Response when disabled:
+# {"enabled":false,"mode":"open","message":"Authentication disabled..."}
+
+# Response when enabled:
+# {"enabled":true,"mode":"protected","message":"API key required for write operations..."}
+```
+
 ## ⚙️ Agent Configuration
 
 Claw Control uses a YAML file to define your agents. Edit `config/agents.yaml` to customize your team:

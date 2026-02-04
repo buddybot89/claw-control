@@ -13,6 +13,7 @@ const cors = require('@fastify/cors');
 const dbAdapter = require('./db-adapter');
 const { loadAgentsConfig, getConfigPath, CONFIG_PATHS } = require('./config-loader');
 const { dispatchWebhook, reloadWebhooks, getWebhooks, SUPPORTED_EVENTS } = require('./webhook');
+const { withAuth, isAuthEnabled } = require('./auth');
 
 /**
  * Generates parameterized query placeholder based on database type.
@@ -98,7 +99,7 @@ fastify.get('/api/stats', async (request, reply) => {
  * @param {number} [request.body.agent_id] - Assigned agent ID
  * @returns {object} Created task object
  */
-fastify.post('/api/tasks', async (request, reply) => {
+fastify.post('/api/tasks', { ...withAuth }, async (request, reply) => {
   const { title, description, status = 'backlog', tags = [], agent_id } = request.body;
   
   if (!title) {
@@ -127,7 +128,7 @@ fastify.post('/api/tasks', async (request, reply) => {
  * @param {object} request.body - Fields to update
  * @returns {object} Updated task object
  */
-fastify.put('/api/tasks/:id', async (request, reply) => {
+fastify.put('/api/tasks/:id', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
   const { title, description, status, tags, agent_id } = request.body;
 
@@ -163,7 +164,7 @@ fastify.put('/api/tasks/:id', async (request, reply) => {
  * @param {string} request.params.id - Task ID
  * @returns {object} Success response with deleted task
  */
-fastify.delete('/api/tasks/:id', async (request, reply) => {
+fastify.delete('/api/tasks/:id', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
 
   const { rows } = await dbAdapter.query(
@@ -194,7 +195,7 @@ const STATUS_PROGRESSION = {
  * @param {string} request.params.id - Task ID
  * @returns {object} Progress result with previous and new status
  */
-fastify.post('/api/tasks/:id/progress', async (request, reply) => {
+fastify.post('/api/tasks/:id/progress', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
   const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
 
@@ -243,7 +244,7 @@ fastify.post('/api/tasks/:id/progress', async (request, reply) => {
  * @param {string} request.params.id - Task ID
  * @returns {object} Success response with completed task
  */
-fastify.post('/api/tasks/:id/complete', async (request, reply) => {
+fastify.post('/api/tasks/:id/complete', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
   const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
 
@@ -407,7 +408,7 @@ fastify.get('/api/agents/:id', async (request, reply) => {
  *       400:
  *         description: Invalid input
  */
-fastify.post('/api/agents', async (request, reply) => {
+fastify.post('/api/agents', { ...withAuth }, async (request, reply) => {
   const { name, description, role = 'Agent', status = 'idle' } = request.body;
 
   const validation = validateAgentInput({ name, status });
@@ -464,7 +465,7 @@ fastify.post('/api/agents', async (request, reply) => {
  *       404:
  *         description: Agent not found
  */
-fastify.put('/api/agents/:id', async (request, reply) => {
+fastify.put('/api/agents/:id', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
   const { name, description, role, status } = request.body;
 
@@ -548,7 +549,7 @@ fastify.put('/api/agents/:id', async (request, reply) => {
  *       404:
  *         description: Agent not found
  */
-fastify.patch('/api/agents/:id/status', async (request, reply) => {
+fastify.patch('/api/agents/:id/status', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
   const { status } = request.body;
 
@@ -613,7 +614,7 @@ fastify.patch('/api/agents/:id/status', async (request, reply) => {
  *       404:
  *         description: Agent not found
  */
-fastify.delete('/api/agents/:id', async (request, reply) => {
+fastify.delete('/api/agents/:id', { ...withAuth }, async (request, reply) => {
   const { id } = request.params;
 
   const { rows } = await dbAdapter.query(
@@ -663,7 +664,7 @@ fastify.get('/api/messages', async (request, reply) => {
  * @param {string} request.body.message - Message content (required)
  * @returns {object} Created message object
  */
-fastify.post('/api/messages', async (request, reply) => {
+fastify.post('/api/messages', { ...withAuth }, async (request, reply) => {
   const { agent_id, message } = request.body;
 
   if (!message) {
@@ -824,10 +825,31 @@ fastify.get('/api/stream', (req, res) => {
 fastify.get('/health', async (request, reply) => {
   try {
     await dbAdapter.query('SELECT 1');
-    return { status: 'healthy', database: 'connected', type: dbAdapter.getDbType() };
+    return { 
+      status: 'healthy', 
+      database: 'connected', 
+      type: dbAdapter.getDbType(),
+      authEnabled: isAuthEnabled()
+    };
   } catch (err) {
     return reply.status(500).send({ status: 'unhealthy', database: 'disconnected', error: err.message });
   }
+});
+
+// ============ AUTH STATUS ============
+
+/**
+ * GET /api/auth/status - Check authentication configuration.
+ * @returns {object} Auth status with mode information
+ */
+fastify.get('/api/auth/status', async (request, reply) => {
+  return {
+    enabled: isAuthEnabled(),
+    mode: isAuthEnabled() ? 'protected' : 'open',
+    message: isAuthEnabled() 
+      ? 'API key required for write operations (POST/PUT/DELETE). GET operations remain public.'
+      : 'Authentication disabled. All operations are public.'
+  };
 });
 
 // ============ CONFIG API ============
@@ -838,7 +860,7 @@ fastify.get('/health', async (request, reply) => {
  * @param {boolean} [request.body.force=false] - Clear existing agents before reload
  * @returns {object} Reload result with created/skipped counts
  */
-fastify.post('/api/config/reload', async (request, reply) => {
+fastify.post('/api/config/reload', { ...withAuth }, async (request, reply) => {
   const { force = false } = request.body || {};
   
   try {
@@ -942,7 +964,7 @@ fastify.get('/api/webhooks', async (request, reply) => {
  * POST /api/webhooks/reload - Reload webhook configuration from disk.
  * @returns {object} Reload result with updated webhook count
  */
-fastify.post('/api/webhooks/reload', async (request, reply) => {
+fastify.post('/api/webhooks/reload', { ...withAuth }, async (request, reply) => {
   const webhooks = reloadWebhooks();
   
   return {
@@ -996,6 +1018,13 @@ const start = async () => {
     
     await dbAdapter.query('SELECT 1');
     fastify.log.info(`Database connection verified (${dbAdapter.getDbType()})`);
+    
+    // Log auth status
+    if (isAuthEnabled()) {
+      fastify.log.info('API key authentication ENABLED - write operations require valid API key');
+    } else {
+      fastify.log.info('API key authentication DISABLED - all operations are public (open mode)');
+    }
     
     await seedAgentsFromConfig();
     
