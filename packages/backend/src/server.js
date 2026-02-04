@@ -1452,6 +1452,107 @@ fastify.post('/api/webhooks/reload', {
 
 // ============ AUTO-SEED ============
 
+/** PostgreSQL schema migration SQL */
+const pgMigration = `
+CREATE TABLE IF NOT EXISTS agents (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'idle',
+  role TEXT DEFAULT 'Agent',
+  created_at TIMESTAMP DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_agents_name ON agents(name);
+CREATE TABLE IF NOT EXISTS tasks (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  status VARCHAR(50) DEFAULT 'backlog',
+  tags TEXT[] DEFAULT '{}',
+  agent_id INTEGER REFERENCES agents(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS agent_messages (
+  id SERIAL PRIMARY KEY,
+  agent_id INTEGER REFERENCES agents(id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_agent_id ON tasks(agent_id);
+CREATE INDEX IF NOT EXISTS idx_messages_agent_id ON agent_messages(agent_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON agent_messages(created_at DESC);
+`;
+
+/** SQLite schema migration SQL */
+const sqliteMigration = `
+CREATE TABLE IF NOT EXISTS agents (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  description TEXT,
+  status TEXT DEFAULT 'idle',
+  role TEXT DEFAULT 'Agent',
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_agents_name ON agents(name);
+CREATE TABLE IF NOT EXISTS tasks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  description TEXT,
+  status TEXT DEFAULT 'backlog',
+  tags TEXT DEFAULT '[]',
+  agent_id INTEGER REFERENCES agents(id) ON DELETE SET NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS agent_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  agent_id INTEGER REFERENCES agents(id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_agent_id ON tasks(agent_id);
+CREATE INDEX IF NOT EXISTS idx_messages_agent_id ON agent_messages(agent_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON agent_messages(created_at DESC);
+`;
+
+/**
+ * Runs database migrations to ensure schema exists.
+ * @returns {Promise<void>}
+ */
+async function runMigrations() {
+  try {
+    fastify.log.info(`Running database migrations (${dbAdapter.getDbType()})...`);
+    
+    if (dbAdapter.isSQLite()) {
+      const db = dbAdapter.getDb();
+      const statements = sqliteMigration
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      
+      for (const stmt of statements) {
+        try {
+          db.exec(stmt + ';');
+        } catch (err) {
+          if (!err.message.includes('already exists')) {
+            fastify.log.warn(`Migration warning: ${err.message}`);
+          }
+        }
+      }
+    } else {
+      await dbAdapter.query(pgMigration);
+    }
+    
+    fastify.log.info('Database migrations completed successfully');
+  } catch (err) {
+    fastify.log.error(err, 'Migration failed');
+    throw err;
+  }
+}
+
 /**
  * Seeds agents from YAML config if database is empty.
  * @returns {Promise<void>}
@@ -1502,6 +1603,8 @@ const start = async () => {
       fastify.log.info('API key authentication DISABLED - all operations are public (open mode)');
     }
     
+    // Run migrations first, then seed
+    await runMigrations();
     await seedAgentsFromConfig();
     
     await fastify.listen({ port: PORT, host: '0.0.0.0' });
