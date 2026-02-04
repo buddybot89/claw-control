@@ -1,0 +1,26 @@
+{
+  "name": "claw-control",
+  "version": "1.0.0",
+  "description": "Kanban for AI Agents - Coordinate your AI team with a real-time dashboard",
+  "author": "Adarsh Mishra",
+  "repository": "https://github.com/adarshmishra07/claw-control",
+  "keywords": [
+    "kanban",
+    "dashboard",
+    "agents",
+    "coordination",
+    "task-management",
+    "multi-agent"
+  ],
+  "skill": {
+    "entry": "SKILL.md",
+    "interactive": true,
+    "setup_required": true
+  },
+  "templates": [
+    "templates/update_dashboard.js"
+  ],
+  "deploy": {
+    "railway": "https://railway.com/deploy/_odwJ4?referralCode=VsZvQs"
+  }
+}
