@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "npm run dev --workspace=@claw-control/backend & npm run dev --workspace=@claw-control/frontend",
     "build": "npm run build --workspaces --if-present",
+    "build:frontend": "npm run build --workspace=@claw-control/frontend",
+    "start": "serve -s packages/frontend/dist -l $PORT",
     "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
