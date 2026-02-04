@@ -36,3 +36,16 @@ packages/backend/data/
 
 # Test coverage
 coverage/
+
+# SSL/TLS certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.cert
+
+# Secret files
+*.secret
+secrets/
+.secrets/
