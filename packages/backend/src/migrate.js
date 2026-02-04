@@ -1,6 +1,9 @@
-const pool = require('./db');
+const fs = require('fs');
+const path = require('path');
+const dbAdapter = require('./db-adapter');
 
-const migration = `
+// PostgreSQL migration
+const pgMigration = `
 -- Create agents table
 CREATE TABLE IF NOT EXISTS agents (
   id SERIAL PRIMARY KEY,
@@ -10,6 +13,9 @@ CREATE TABLE IF NOT EXISTS agents (
   role TEXT DEFAULT 'Agent',
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+-- Create unique index on agent name
+CREATE UNIQUE INDEX IF NOT EXISTS idx_agents_name ON agents(name);
 
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS tasks (
@@ -55,22 +61,67 @@ END $$;
 `;
 
 async function migrate() {
-  console.log('Running database migration...');
+  const dbType = dbAdapter.getDbType();
+  console.log(`Running database migration (${dbType})...`);
+  
   try {
-    await pool.query(migration);
-    console.log('Migration completed successfully!');
+    if (dbAdapter.isSQLite()) {
+      // Load and run SQLite schema
+      const schemaPath = path.join(__dirname, 'sqlite-schema.sql');
+      const sqliteSchema = fs.readFileSync(schemaPath, 'utf8');
+      
+      // Use db.exec() which can handle multiple statements
+      const db = dbAdapter.getDb();
+      try {
+        db.exec(sqliteSchema);
+        console.log('SQLite schema created successfully!');
+      } catch (err) {
+        // If exec fails (e.g., table already exists), try statement by statement
+        console.log('Trying statement-by-statement execution...');
+        const statements = sqliteSchema
+          .split(';')
+          .map(s => s.trim())
+          .filter(s => s.length > 0 && !s.startsWith('--'));
+        
+        for (const stmt of statements) {
+          try {
+            db.exec(stmt + ';');
+          } catch (stmtErr) {
+            // Ignore "already exists" errors
+            if (!stmtErr.message.includes('already exists')) {
+              console.warn(`  Warning: ${stmtErr.message}`);
+            }
+          }
+        }
+      }
+      console.log('SQLite migration completed successfully!');
+    } else {
+      // PostgreSQL migration
+      await dbAdapter.query(pgMigration);
+      console.log('PostgreSQL migration completed successfully!');
+    }
     
     // Check if we have any agents, if not create a default one
-    const { rows } = await pool.query('SELECT COUNT(*) FROM agents');
-    if (parseInt(rows[0].count) === 0) {
+    const { rows } = await dbAdapter.query('SELECT COUNT(*) as count FROM agents');
+    const count = parseInt(rows[0].count);
+    
+    if (count === 0) {
       console.log('Creating default agent...');
-      await pool.query(
-        "INSERT INTO agents (name, description, status) VALUES ($1, $2, $3)",
-        ['Main Agent', 'Primary mission control agent', 'idle']
-      );
+      if (dbAdapter.isSQLite()) {
+        await dbAdapter.query(
+          "INSERT INTO agents (name, description, status) VALUES (?, ?, ?)",
+          ['Main Agent', 'Primary mission control agent', 'idle']
+        );
+      } else {
+        await dbAdapter.query(
+          "INSERT INTO agents (name, description, status) VALUES ($1, $2, $3)",
+          ['Main Agent', 'Primary mission control agent', 'idle']
+        );
+      }
       console.log('Default agent created.');
     }
     
+    await dbAdapter.close();
     process.exit(0);
   } catch (err) {
     console.error('Migration failed:', err);

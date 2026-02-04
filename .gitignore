@@ -28,7 +28,11 @@ Thumbs.db
 
 # Database
 *.db
+*.db-shm
+*.db-wal
+*.db-journal
 *.sqlite
+packages/backend/data/
 
 # Test coverage
 coverage/

@@ -1,21 +1,16 @@
-const { Pool } = require('pg');
+/**
+ * DEPRECATED: Use db-adapter.js instead
+ * 
+ * This file is kept for backward compatibility with scripts that still use pool.query()
+ * For new code, use: const dbAdapter = require('./db-adapter');
+ */
 
-// Use DATABASE_URL from environment (Railway sets this automatically)
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('railway') 
-    ? { rejectUnauthorized: false } 
-    : false
-});
+const dbAdapter = require('./db-adapter');
 
-// Test connection on startup
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL database');
-});
-
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
-
-module.exports = pool;
+// Export the db-adapter as a drop-in replacement for pg Pool
+// This provides backward compatibility for scripts using pool.query()
+module.exports = {
+  query: dbAdapter.query,
+  // Add additional Pool-like methods as needed
+  end: dbAdapter.close,
+};

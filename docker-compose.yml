@@ -1,5 +1,12 @@
 version: '3.8'
 
+# =================================================================
+# Claw Control - Docker Compose Configuration
+# 
+# By default, this uses PostgreSQL. For SQLite, use:
+#   docker-compose -f docker-compose.yml -f docker-compose.sqlite.yml up
+# =================================================================
+
 services:
   # PostgreSQL Database
   db:
@@ -30,6 +37,7 @@ services:
       PORT: 3001
     volumes:
       - ./config:/app/config:ro  # Mount config directory (read-only)
+      - sqlite_data:/app/data    # SQLite data (only used if DATABASE_URL is sqlite:)
     ports:
       - "3001:3001"
     depends_on:
@@ -52,3 +60,4 @@ services:
 
 volumes:
   postgres_data:
+  sqlite_data:

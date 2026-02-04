@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^11.2.0",
+    "better-sqlite3": "^11.7.0",
     "fastify": "^5.7.2",
     "js-yaml": "^4.1.0",
     "pg": "^8.11.3"

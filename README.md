@@ -20,10 +20,33 @@ Claw Control is a beautiful, real-time mission control dashboard for managing AI
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL 14+
+- **SQLite** (bundled, no setup!) OR **PostgreSQL 14+** (production)
 - npm or yarn
 
-### Option 1: Docker (Recommended)
+### Option 1: SQLite - Zero Setup! (Recommended for Local Dev)
+
+```bash
+# Clone the repo
+git clone https://github.com/gokuclaw-adarsh/claw-control.git
+cd claw-control
+
+# Setup backend with SQLite
+cd packages/backend
+npm install
+echo "DATABASE_URL=sqlite:./data/claw-control.db" > .env
+npm run migrate
+npm start
+
+# In another terminal, setup frontend
+cd packages/frontend
+npm install
+echo "VITE_API_URL=http://localhost:3001" > .env
+npm run dev
+```
+
+That's it! No PostgreSQL needed! 🎉
+
+### Option 2: Docker with PostgreSQL (Production)
 
 ```bash
 # Clone the repo
@@ -33,13 +56,20 @@ cd claw-control
 # Copy environment file
 cp .env.example .env
 
-# Start with Docker Compose
+# Start with Docker Compose (uses PostgreSQL)
 docker-compose up -d
 ```
 
 Visit `http://localhost:5173` - you're ready to go! 🎉
 
-### Option 2: Manual Setup
+### Option 3: Docker with SQLite
+
+```bash
+# Use the SQLite override
+docker-compose -f docker-compose.yml -f docker-compose.sqlite.yml up -d --scale db=0
+```
+
+### Option 4: Manual PostgreSQL Setup
 
 ```bash
 # Clone the repo
@@ -72,15 +102,17 @@ claw-control/
 │   │   │   └── types/       # TypeScript types
 │   │   └── package.json
 │   │
-│   └── backend/           # Fastify + PostgreSQL
+│   └── backend/           # Fastify + SQLite/PostgreSQL
 │       ├── src/
-│       │   ├── server.js    # Main API server
-│       │   ├── db.js        # Database connection
-│       │   └── migrate.js   # DB migrations
+│       │   ├── server.js      # Main API server
+│       │   ├── db-adapter.js  # Database abstraction (SQLite/Postgres)
+│       │   ├── sqlite-schema.sql  # SQLite schema
+│       │   └── migrate.js     # DB migrations
 │       └── package.json
 │
-├── docker-compose.yml     # Full stack deployment
-├── .env.example           # Environment template
+├── docker-compose.yml         # Full stack (PostgreSQL)
+├── docker-compose.sqlite.yml  # SQLite override
+├── .env.example               # Environment template
 └── LICENSE
 ```
 
@@ -184,9 +216,18 @@ curl -X POST http://localhost:3001/api/config/reload \
 ### Backend
 
 ```env
+# SQLite (easy local setup - no external database needed):
+DATABASE_URL=sqlite:./data/claw-control.db
+
+# Or PostgreSQL (production):
 DATABASE_URL=postgresql://user:password@localhost:5432/claw_control
+
 PORT=3001
 ```
+
+The database adapter auto-detects the type based on the URL prefix:
+- `sqlite:` → Uses better-sqlite3 (bundled, zero setup)
+- `postgresql://` → Uses pg (requires PostgreSQL server)
 
 ### Frontend
 

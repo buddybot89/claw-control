@@ -1,7 +1,10 @@
 const fastify = require('fastify')({ logger: true });
 const cors = require('@fastify/cors');
-const pool = require('./db');
+const dbAdapter = require('./db-adapter');
 const { loadAgentsConfig, getConfigPath, CONFIG_PATHS } = require('./config-loader');
+
+// Helper to handle parameterized queries for both Postgres ($1) and SQLite (?)
+const param = (index) => dbAdapter.isSQLite() ? '?' : `$${index}`;
 
 // Store active SSE clients
 let clients = [];
@@ -28,11 +31,11 @@ fastify.get('/api/tasks', async (request, reply) => {
 
   if (status) {
     params.push(status);
-    conditions.push(`status = $${params.length}`);
+    conditions.push(`status = ${param(params.length)}`);
   }
   if (agent_id) {
     params.push(agent_id);
-    conditions.push(`agent_id = $${params.length}`);
+    conditions.push(`agent_id = ${param(params.length)}`);
   }
 
   if (conditions.length > 0) {
@@ -40,18 +43,18 @@ fastify.get('/api/tasks', async (request, reply) => {
   }
   query += ' ORDER BY created_at DESC';
 
-  const { rows } = await pool.query(query, params);
+  const { rows } = await dbAdapter.query(query, params);
   return rows;
 });
 
 // GET /api/stats - Dashboard stats
 fastify.get('/api/stats', async (request, reply) => {
-  const { rows: agentStats } = await pool.query(
-    "SELECT COUNT(*) FROM agents WHERE status = 'working'"
+  const { rows: agentStats } = await dbAdapter.query(
+    "SELECT COUNT(*) as count FROM agents WHERE status = 'working'"
   );
   
-  const { rows: taskStats } = await pool.query(
-    "SELECT COUNT(*) FROM tasks WHERE status IN ('backlog', 'todo')"
+  const { rows: taskStats } = await dbAdapter.query(
+    "SELECT COUNT(*) as count FROM tasks WHERE status IN ('backlog', 'todo')"
   );
 
   return {
@@ -68,11 +71,14 @@ fastify.post('/api/tasks', async (request, reply) => {
     return reply.status(400).send({ error: 'Title is required' });
   }
 
-  const { rows } = await pool.query(
+  // For SQLite, convert tags array to JSON string
+  const tagsValue = dbAdapter.isSQLite() ? JSON.stringify(tags) : tags;
+
+  const { rows } = await dbAdapter.query(
     `INSERT INTO tasks (title, description, status, tags, agent_id) 
-     VALUES ($1, $2, $3, $4, $5) 
+     VALUES (${param(1)}, ${param(2)}, ${param(3)}, ${param(4)}, ${param(5)}) 
      RETURNING *`,
-    [title, description || null, status, tags, agent_id || null]
+    [title, description || null, status, tagsValue, agent_id || null]
   );
 
   const task = rows[0];
@@ -85,17 +91,21 @@ fastify.put('/api/tasks/:id', async (request, reply) => {
   const { id } = request.params;
   const { title, description, status, tags, agent_id } = request.body;
 
-  const { rows } = await pool.query(
+  // For SQLite, convert tags array to JSON string if provided
+  const tagsValue = tags !== undefined && dbAdapter.isSQLite() ? JSON.stringify(tags) : tags;
+  const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
+
+  const { rows } = await dbAdapter.query(
     `UPDATE tasks 
-     SET title = COALESCE($1, title),
-         description = COALESCE($2, description),
-         status = COALESCE($3, status),
-         tags = COALESCE($4, tags),
-         agent_id = COALESCE($5, agent_id),
-         updated_at = NOW()
-     WHERE id = $6
+     SET title = COALESCE(${param(1)}, title),
+         description = COALESCE(${param(2)}, description),
+         status = COALESCE(${param(3)}, status),
+         tags = COALESCE(${param(4)}, tags),
+         agent_id = COALESCE(${param(5)}, agent_id),
+         updated_at = ${nowFn}
+     WHERE id = ${param(6)}
      RETURNING *`,
-    [title, description, status, tags, agent_id, id]
+    [title, description, status, tagsValue, agent_id, id]
   );
 
   if (rows.length === 0) {
@@ -111,8 +121,8 @@ fastify.put('/api/tasks/:id', async (request, reply) => {
 fastify.delete('/api/tasks/:id', async (request, reply) => {
   const { id } = request.params;
 
-  const { rows } = await pool.query(
-    'DELETE FROM tasks WHERE id = $1 RETURNING *',
+  const { rows } = await dbAdapter.query(
+    `DELETE FROM tasks WHERE id = ${param(1)} RETURNING *`,
     [id]
   );
 
@@ -136,10 +146,11 @@ const STATUS_PROGRESSION = {
 // POST /api/tasks/:id/progress - Auto-progress task to next status
 fastify.post('/api/tasks/:id/progress', async (request, reply) => {
   const { id } = request.params;
+  const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
 
   // Get current task
-  const { rows: current } = await pool.query(
-    'SELECT * FROM tasks WHERE id = $1',
+  const { rows: current } = await dbAdapter.query(
+    `SELECT * FROM tasks WHERE id = ${param(1)}`,
     [id]
   );
 
@@ -158,10 +169,10 @@ fastify.post('/api/tasks/:id/progress', async (request, reply) => {
   }
 
   // Update to next status
-  const { rows } = await pool.query(
+  const { rows } = await dbAdapter.query(
     `UPDATE tasks 
-     SET status = $1, updated_at = NOW()
-     WHERE id = $2
+     SET status = ${param(1)}, updated_at = ${nowFn}
+     WHERE id = ${param(2)}
      RETURNING *`,
     [nextStatus, id]
   );
@@ -180,11 +191,12 @@ fastify.post('/api/tasks/:id/progress', async (request, reply) => {
 // POST /api/tasks/:id/complete - Mark task as completed directly
 fastify.post('/api/tasks/:id/complete', async (request, reply) => {
   const { id } = request.params;
+  const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
 
-  const { rows } = await pool.query(
+  const { rows } = await dbAdapter.query(
     `UPDATE tasks 
-     SET status = 'completed', updated_at = NOW()
-     WHERE id = $1
+     SET status = 'completed', updated_at = ${nowFn}
+     WHERE id = ${param(1)}
      RETURNING *`,
     [id]
   );
@@ -206,7 +218,7 @@ fastify.post('/api/tasks/:id/complete', async (request, reply) => {
 
 // GET /api/agents - List all agents
 fastify.get('/api/agents', async (request, reply) => {
-  const { rows } = await pool.query('SELECT * FROM agents ORDER BY created_at');
+  const { rows } = await dbAdapter.query('SELECT * FROM agents ORDER BY created_at');
   return rows;
 });
 
@@ -218,9 +230,9 @@ fastify.post('/api/agents', async (request, reply) => {
     return reply.status(400).send({ error: 'Name is required' });
   }
 
-  const { rows } = await pool.query(
+  const { rows } = await dbAdapter.query(
     `INSERT INTO agents (name, description, role, status) 
-     VALUES ($1, $2, $3, $4) 
+     VALUES (${param(1)}, ${param(2)}, ${param(3)}, ${param(4)}) 
      RETURNING *`,
     [name, description || null, role, status]
   );
@@ -235,13 +247,13 @@ fastify.put('/api/agents/:id', async (request, reply) => {
   const { id } = request.params;
   const { name, description, role, status } = request.body;
 
-  const { rows } = await pool.query(
+  const { rows } = await dbAdapter.query(
     `UPDATE agents 
-     SET name = COALESCE($1, name),
-         description = COALESCE($2, description),
-         role = COALESCE($3, role),
-         status = COALESCE($4, status)
-     WHERE id = $5
+     SET name = COALESCE(${param(1)}, name),
+         description = COALESCE(${param(2)}, description),
+         role = COALESCE(${param(3)}, role),
+         status = COALESCE(${param(4)}, status)
+     WHERE id = ${param(5)}
      RETURNING *`,
     [name, description, role, status, id]
   );
@@ -266,13 +278,13 @@ fastify.get('/api/messages', async (request, reply) => {
 
   if (agent_id) {
     params.push(agent_id);
-    query += ` WHERE m.agent_id = $${params.length}`;
+    query += ` WHERE m.agent_id = ${param(params.length)}`;
   }
   
   params.push(parseInt(limit));
-  query += ` ORDER BY m.created_at DESC LIMIT $${params.length}`;
+  query += ` ORDER BY m.created_at DESC LIMIT ${param(params.length)}`;
 
-  const { rows } = await pool.query(query, params);
+  const { rows } = await dbAdapter.query(query, params);
   return rows;
 });
 
@@ -284,9 +296,9 @@ fastify.post('/api/messages', async (request, reply) => {
     return reply.status(400).send({ error: 'Message is required' });
   }
 
-  const { rows } = await pool.query(
+  const { rows } = await dbAdapter.query(
     `INSERT INTO agent_messages (agent_id, message) 
-     VALUES ($1, $2) 
+     VALUES (${param(1)}, ${param(2)}) 
      RETURNING *`,
     [agent_id || null, message]
   );
@@ -300,7 +312,7 @@ fastify.post('/api/messages', async (request, reply) => {
 
 // GET /api/board - Get kanban board format
 fastify.get('/api/board', async (request, reply) => {
-  const { rows } = await pool.query('SELECT * FROM tasks ORDER BY created_at');
+  const { rows } = await dbAdapter.query('SELECT * FROM tasks ORDER BY created_at');
   
   // Group by status into columns
   const columns = [
@@ -332,9 +344,10 @@ fastify.get('/api/board', async (request, reply) => {
 // Demo mode: randomly progress tasks
 async function simulateWorkProgress() {
   try {
-    // Get all non-completed tasks
-    const { rows: tasks } = await pool.query(
-      "SELECT * FROM tasks WHERE status != 'completed' ORDER BY RANDOM() LIMIT 1"
+    // Get all non-completed tasks (use RANDOM() for Postgres, random() for SQLite - both work)
+    const randomFn = dbAdapter.isSQLite() ? 'RANDOM()' : 'RANDOM()';
+    const { rows: tasks } = await dbAdapter.query(
+      `SELECT * FROM tasks WHERE status != 'completed' ORDER BY ${randomFn} LIMIT 1`
     );
 
     if (tasks.length === 0) {
@@ -346,10 +359,11 @@ async function simulateWorkProgress() {
     const nextStatus = STATUS_PROGRESSION[task.status];
 
     if (nextStatus) {
-      const { rows } = await pool.query(
+      const nowFn = dbAdapter.isSQLite() ? "datetime('now')" : 'NOW()';
+      const { rows } = await dbAdapter.query(
         `UPDATE tasks 
-         SET status = $1, updated_at = NOW()
-         WHERE id = $2
+         SET status = ${param(1)}, updated_at = ${nowFn}
+         WHERE id = ${param(2)}
          RETURNING *`,
         [nextStatus, task.id]
       );
@@ -381,8 +395,8 @@ fastify.get('/api/stream', (req, res) => {
 
   // Send initial data
   Promise.all([
-    pool.query('SELECT * FROM tasks ORDER BY created_at'),
-    pool.query('SELECT * FROM agents ORDER BY created_at')
+    dbAdapter.query('SELECT * FROM tasks ORDER BY created_at'),
+    dbAdapter.query('SELECT * FROM agents ORDER BY created_at')
   ]).then(([tasksResult, agentsResult]) => {
     res.raw.write(`event: init\ndata: ${JSON.stringify({
       tasks: tasksResult.rows,
@@ -425,8 +439,8 @@ fastify.get('/api/stream', (req, res) => {
 
 fastify.get('/health', async (request, reply) => {
   try {
-    await pool.query('SELECT 1');
-    return { status: 'healthy', database: 'connected' };
+    await dbAdapter.query('SELECT 1');
+    return { status: 'healthy', database: 'connected', type: dbAdapter.getDbType() };
   } catch (err) {
     return reply.status(500).send({ status: 'unhealthy', database: 'disconnected', error: err.message });
   }
@@ -444,12 +458,12 @@ fastify.post('/api/config/reload', async (request, reply) => {
     
     if (force) {
       // Force mode: Clear all agents and recreate from config
-      await pool.query('DELETE FROM agents');
+      await dbAdapter.query('DELETE FROM agents');
       console.log('🗑️  Cleared existing agents (force mode)');
     }
     
     // Check existing agents
-    const { rows: existing } = await pool.query('SELECT name FROM agents');
+    const { rows: existing } = await dbAdapter.query('SELECT name FROM agents');
     const existingNames = new Set(existing.map(a => a.name));
     
     let created = 0;
@@ -461,19 +475,28 @@ fastify.post('/api/config/reload', async (request, reply) => {
         continue;
       }
       
-      await pool.query(
-        `INSERT INTO agents (name, description, role, status) 
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (name) DO UPDATE SET
-           description = EXCLUDED.description,
-           role = EXCLUDED.role`,
-        [agent.name, agent.description, agent.role, agent.status]
-      );
+      // Use INSERT OR REPLACE for SQLite, ON CONFLICT for Postgres
+      if (dbAdapter.isSQLite()) {
+        await dbAdapter.query(
+          `INSERT OR REPLACE INTO agents (name, description, role, status) 
+           VALUES (?, ?, ?, ?)`,
+          [agent.name, agent.description, agent.role, agent.status]
+        );
+      } else {
+        await dbAdapter.query(
+          `INSERT INTO agents (name, description, role, status) 
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (name) DO UPDATE SET
+             description = EXCLUDED.description,
+             role = EXCLUDED.role`,
+          [agent.name, agent.description, agent.role, agent.status]
+        );
+      }
       created++;
     }
     
     // Fetch updated agents list
-    const { rows: updatedAgents } = await pool.query('SELECT * FROM agents ORDER BY created_at');
+    const { rows: updatedAgents } = await dbAdapter.query('SELECT * FROM agents ORDER BY created_at');
     
     // Broadcast the update
     broadcast('agents-reloaded', { agents: updatedAgents });
@@ -512,7 +535,7 @@ fastify.get('/api/config/status', async (request, reply) => {
 
 async function seedAgentsFromConfig() {
   try {
-    const { rows } = await pool.query('SELECT COUNT(*) as count FROM agents');
+    const { rows } = await dbAdapter.query('SELECT COUNT(*) as count FROM agents');
     const count = parseInt(rows[0].count);
     
     if (count === 0) {
@@ -520,9 +543,9 @@ async function seedAgentsFromConfig() {
       const agents = loadAgentsConfig();
       
       for (const agent of agents) {
-        await pool.query(
+        await dbAdapter.query(
           `INSERT INTO agents (name, description, role, status) 
-           VALUES ($1, $2, $3, $4)`,
+           VALUES (${param(1)}, ${param(2)}, ${param(3)}, ${param(4)})`,
           [agent.name, agent.description, agent.role, agent.status]
         );
         console.log(`   ✅ Created agent: ${agent.name} (${agent.role})`);
@@ -544,8 +567,8 @@ const start = async () => {
     const PORT = process.env.PORT || 3001;
     
     // Verify database connection
-    await pool.query('SELECT 1');
-    console.log('Database connection verified');
+    await dbAdapter.query('SELECT 1');
+    console.log(`Database connection verified (${dbAdapter.getDbType()})`);
     
     // Seed agents from YAML config if table is empty
     await seedAgentsFromConfig();
