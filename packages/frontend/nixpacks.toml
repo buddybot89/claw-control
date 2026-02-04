@@ -1,0 +1,8 @@
+# Nixpacks config for frontend service
+# Builds the Vite app and serves static files in production
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npx serve dist -s -l ${PORT:-3000}"
