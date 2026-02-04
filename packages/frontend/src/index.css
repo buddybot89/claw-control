@@ -9,12 +9,24 @@
 }
 
 body {
-  @apply bg-cyber-black text-cyber-green font-mono overflow-hidden;
+  @apply bg-cyber-black text-cyber-green font-mono;
   background-image: 
     linear-gradient(rgba(0, 10, 20, 0.9), rgba(0, 5, 10, 0.95)),
     linear-gradient(0deg, transparent 24%, rgba(0, 243, 255, .03) 25%, rgba(0, 243, 255, .03) 26%, transparent 27%, transparent 74%, rgba(0, 243, 255, .03) 75%, rgba(0, 243, 255, .03) 76%, transparent 77%, transparent),
     linear-gradient(90deg, transparent 24%, rgba(0, 243, 255, .03) 25%, rgba(0, 243, 255, .03) 26%, transparent 27%, transparent 74%, rgba(0, 243, 255, .03) 75%, rgba(0, 243, 255, .03) 76%, transparent 77%, transparent);
   background-size: 100% 100%, 30px 30px, 30px 30px;
+  background-attachment: fixed;
+}
+
+/* Landing page allows scrolling */
+body:has(.min-h-screen) {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Dashboard locks scrolling */
+body:has(.crt-overlay) {
+  overflow: hidden;
 }
 
 /* CRT Screen Effect Overlay */
