@@ -177,8 +177,9 @@ Railway offers one-click deployment with automatic builds and managed PostgreSQL
    - Set root directory: `packages/frontend`
    - Add environment variables:
      ```
-     VITE_API_URL=https://your-backend.railway.app
+     VITE_API_URL=https://${{@claw-control/backend.RAILWAY_PUBLIC_DOMAIN}}
      ```
+   - **Note:** The `${{...}}` syntax auto-links to your backend service's URL. Replace `@claw-control/backend` with your backend service name if different.
 
 5. **Configure Domains:**
    - Backend: Generate domain or add custom domain
