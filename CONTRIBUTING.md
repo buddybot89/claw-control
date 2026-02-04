@@ -235,7 +235,7 @@ claw-control/
 ## Questions?
 
 Feel free to:
-- Open a [GitHub Discussion](https://github.com/gokuclaw-adarsh/claw-control/discussions)
+- Open a [GitHub Discussion](https://github.com/adarshmishra07/claw-control/discussions)
 - Check existing issues for similar questions
 - Ask in your PR if something is unclear
 

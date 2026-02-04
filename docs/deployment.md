@@ -38,7 +38,7 @@ This guide covers deploying Claw Control to production using Docker, Railway, an
 
 ```bash
 # Clone the repository
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Create environment file
@@ -269,7 +269,7 @@ sudo mkdir -p /opt/claw-control
 sudo chown $USER:$USER /opt/claw-control
 
 # Clone repository
-git clone https://github.com/gokuclaw-adarsh/claw-control.git /opt/claw-control
+git clone https://github.com/adarshmishra07/claw-control.git /opt/claw-control
 cd /opt/claw-control
 
 # Setup backend
@@ -572,5 +572,5 @@ Before going live, ensure:
 ---
 
 <p align="center">
-  You're deployed! 🎉 Questions? Check <a href="https://github.com/gokuclaw-adarsh/claw-control/issues">GitHub Issues</a> 🦞
+  You're deployed! 🎉 Questions? Check <a href="https://github.com/adarshmishra07/claw-control/issues">GitHub Issues</a> 🦞
 </p>

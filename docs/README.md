@@ -17,7 +17,7 @@ Claw Control is an open-source platform for building and deploying autonomous AI
 
 ```bash
 # Clone the repository
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Copy environment template
@@ -55,7 +55,7 @@ We welcome contributions! See our [Contributing Guide](contributing.md) for deta
 
 ## 📄 License
 
-MIT License — see [LICENSE](https://github.com/gokuclaw-adarsh/claw-control/blob/main/LICENSE) for details.
+MIT License — see [LICENSE](https://github.com/adarshmishra07/claw-control/blob/main/LICENSE) for details.
 
 ---
 

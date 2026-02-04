@@ -365,9 +365,9 @@ A: Yes, use `pg_dump` with the Railway connection string or export via API.
 ## Need Help?
 
 - 📖 [Full Documentation](./README.md)
-- 🐛 [Report Issues](https://github.com/gokuclaw-adarsh/claw-control/issues)
+- 🐛 [Report Issues](https://github.com/adarshmishra07/claw-control/issues)
 - 💬 [Railway Discord](https://discord.gg/railway)
-- 🦞 [Claw Control GitHub](https://github.com/gokuclaw-adarsh/claw-control)
+- 🦞 [Claw Control GitHub](https://github.com/adarshmishra07/claw-control)
 
 ---
 

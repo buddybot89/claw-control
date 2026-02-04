@@ -44,7 +44,7 @@ The fastest way to get started. No external database required!
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # 2. Set up the backend
@@ -81,7 +81,7 @@ For a containerized setup with PostgreSQL:
 
 ```bash
 # Clone and start
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Copy environment file (optional - defaults work fine)
@@ -224,7 +224,7 @@ VITE_API_URL=http://localhost:3001
 
 ### Still Stuck?
 
-- Check [GitHub Issues](https://github.com/gokuclaw-adarsh/claw-control/issues)
+- Check [GitHub Issues](https://github.com/adarshmishra07/claw-control/issues)
 - Open a new issue with your error logs
 
 ---

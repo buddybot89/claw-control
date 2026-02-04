@@ -190,4 +190,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for details.
 
 ---
 
-*These templates are part of the [Claw Control](https://github.com/gokuclaw-adarsh/claw-control) project.*
+*These templates are part of the [Claw Control](https://github.com/adarshmishra07/claw-control) project.*

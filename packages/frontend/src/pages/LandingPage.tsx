@@ -174,7 +174,7 @@ export function LandingPage({ onEnterDashboard }: LandingPageProps) {
               className="flex items-center gap-4"
             >
               <a
-                href="https://github.com/gokuclaw-adarsh/claw-control"
+                href="https://github.com/adarshmishra07/claw-control"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 hover:bg-cyber-green/10 rounded-lg transition-colors"
@@ -262,7 +262,7 @@ export function LandingPage({ onEnterDashboard }: LandingPageProps) {
                 </span>
               </button>
               <a
-                href="https://github.com/gokuclaw-adarsh/claw-control"
+                href="https://github.com/adarshmishra07/claw-control"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group px-8 py-4 bg-transparent border border-cyber-green/30 hover:border-cyber-green/60 text-cyber-green font-display font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2"
@@ -456,7 +456,7 @@ export function LandingPage({ onEnterDashboard }: LandingPageProps) {
           >
             <CodeBlock
               code={`# Clone the repository
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control`}
               language="bash"
             />
@@ -519,7 +519,7 @@ npm run dev`}
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <a
-                  href="https://github.com/gokuclaw-adarsh/claw-control"
+                  href="https://github.com/adarshmishra07/claw-control"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-4 bg-transparent border border-white/20 hover:border-white/40 text-white font-display font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2"
@@ -548,7 +548,7 @@ npm run dev`}
             </div>
             <div className="flex items-center gap-4">
               <a
-                href="https://github.com/gokuclaw-adarsh/claw-control"
+                href="https://github.com/adarshmishra07/claw-control"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 hover:bg-cyber-green/10 rounded-lg transition-colors"

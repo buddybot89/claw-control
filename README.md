@@ -2,7 +2,7 @@
 
 > **Kanban for AI Agents** - Coordinate your AI team with style
 
-[![GitHub stars](https://img.shields.io/github/stars/gokuclaw-adarsh/claw-control?style=flat-square&logo=github)](https://github.com/gokuclaw-adarsh/claw-control/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/adarshmishra07/claw-control?style=flat-square&logo=github)](https://github.com/adarshmishra07/claw-control/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -100,7 +100,7 @@ Data Flow:
 
 ```bash
 # Clone the repo
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Setup backend with SQLite
@@ -123,7 +123,7 @@ That's it! No PostgreSQL needed! 🎉
 
 ```bash
 # Clone the repo
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Copy environment file
@@ -152,7 +152,7 @@ Deploy to Railway with zero configuration. See the full [Railway Template Guide]
 
 ```bash
 # Clone the repo
-git clone https://github.com/gokuclaw-adarsh/claw-control.git
+git clone https://github.com/adarshmishra07/claw-control.git
 cd claw-control
 
 # Setup backend
@@ -491,5 +491,5 @@ Built with:
 ---
 
 <p align="center">
-  Made with 🦞 by the <a href="https://github.com/gokuclaw-adarsh">OpenClaw</a> team
+  Made with 🦞 by the <a href="https://github.com/adarshmishra07">OpenClaw</a> team
 </p>
