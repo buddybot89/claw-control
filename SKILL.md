@@ -47,15 +47,29 @@ Walk the human through each step. Be friendly and conversational - this is a set
 
 ### Step 1: Deploy Claw Control
 
-Ask: **"Let's get Claw Control running! How do you want to deploy it?"**
+Ask: **"Let's get Claw Control running! How do you want to deploy?"**
 
-Present three options based on their comfort level:
+**Present these options (recommend A for most users):**
+
+🅰️ **One-Click Deploy** ⭐ RECOMMENDED
+   Click a link, wait 3 min, done!
+   
+🅱️ **I Deploy For You** 
+   Give me a Railway token, I handle the rest
+   
+🅲 **Full Automation**
+   Give me GitHub + Railway tokens, I fork & deploy
+
+🅳 **Browser OAuth** ⚠️ Requires browser setup first!
+   I use your browser to sign in everywhere via GitHub
+   
+*Most users should pick Option A - it's the fastest way to get started!*
 
 ---
 
-#### 🅰️ Option A: One-Click Deploy (Easiest)
+#### 🅰️ Option A: One-Click Deploy ⭐ RECOMMENDED
 
-*Best for: Getting started quickly with minimal setup*
+*Best for: Everyone! Fastest path to a working dashboard.*
 
 **Deploy URL (copy this exactly):**
 https://railway.app/deploy/claw-control?referralCode=VsZvQs
@@ -206,24 +220,24 @@ Share both and I'll take it from here!
 
 ---
 
-#### 🅳 Option D: ULTIMATE Automation (Browser + GitHub Login) ⚡
+#### 🅳 Option D: Browser OAuth (Advanced)
 
-*Best for: TRUE VIP treatment - zero tokens, zero manual steps!*
+*Best for: Power users who want full automation - but requires browser setup first!*
+
+⚠️ **Important:** This option requires browser access to be configured. If you haven't set that up yet, I'll help you with it first, then we can do full OAuth automation.
 
 ```
-This is the ULTIMATE setup! With browser access + GitHub login, I handle EVERYTHING:
+With browser access + GitHub login, I can handle a lot automatically:
 
-- No tokens to create manually
-- No URLs to copy
-- No accounts to set up
-- I do it ALL through the browser!
+- Navigate and click through OAuth flows
+- Create accounts via "Sign in with GitHub"
+- Grab API keys from dashboards
 
-What I need:
-1. Click the OpenClaw Browser Relay extension in your toolbar
-2. Make sure you're logged into GitHub in that tab
-3. Tell me "Deploy Claw Control for me"
+What I need FIRST:
+1. Browser extension installed and attached (see Step 4)
+2. You're logged into GitHub in that browser tab
 
-That's it! I take over from there.
+Once browser is ready, just say "Deploy Claw Control for me"
 ```
 
 **🚀 What I'll do automatically via browser:**
@@ -254,39 +268,35 @@ Browser Actions:
 12. Done! 🎉
 ```
 
-**Why Option D is incredible:**
-- 🔑 No manual token creation - I grab them from dashboards
-- 🖱️ No clicking buttons - I click them for you
-- 📋 No copying URLs - I read them directly
-- ⏱️ No waiting around - I handle the whole flow
-- 🎯 True hands-off automation
+**What Option D gives you (once browser is set up):**
+- 🔑 Auto-grab tokens from dashboards
+- 🖱️ I click through OAuth flows for you
+- 📋 I read URLs directly from the pages
+- 🎯 More automation than token-based options
 
 **After everything's deployed:**
 ```
-🎊 VIP Setup Complete - ZERO Manual Steps!
+🎉 Browser OAuth Setup Complete!
 
-Here's what I did for you:
+Here's what I did:
 - Created Railway account (via GitHub OAuth)
 - Forked: github.com/yourusername/claw-control
 - Deployed Dashboard: https://your-frontend.railway.app  
 - Deployed API: https://your-backend.railway.app
 - Retrieved and stored API tokens
 
-Everything is configured and ready to go!
-You literally didn't have to do anything except approve GitHub OAuth.
+Note: This required browser setup first, but now 
+future deployments will be even smoother!
 ```
 
 ---
 
-**Comparison of Options:**
+**Quick Comparison:**
 
-| Aspect | A: One-Click | B: Railway Token | C: Both Tokens | D: Browser+GitHub |
-|--------|--------------|------------------|----------------|-------------------|
-| Manual Steps | 5-6 clicks | Copy 1 token | Copy 2 tokens | **0 - just approve OAuth** |
-| Tokens Needed | 0 | Railway | GitHub + Railway | **None** |
-| Automation Level | Low | Medium | High | **MAXIMUM** |
-| Time | 5 min | 3 min | 2 min | **< 1 min** |
-| VIP Treatment | ❌ | ❌ | ✅ | **⚡ ULTIMATE** |
+🅰️ **One-Click** - 5 min, no tokens, just click a link ⭐ Start here!
+🅱️ **Railway Token** - 3 min, 1 token to copy
+🅲 **Both Tokens** - 2 min, GitHub + Railway tokens  
+🅳 **Browser OAuth** - Requires browser setup first, then automated
 
 ---
 
@@ -382,14 +392,14 @@ Ask: **"Now for the fun part! Let's theme your agent team. Name ANY series, movi
 
 **Popular examples (but NOT limited to these):**
 
-| Theme | Coordinator | Backend | DevOps | Research | Architecture | Deployment |
-|-------|-------------|---------|--------|----------|--------------|------------|
-| 🐉 Dragon Ball Z | Goku | Vegeta | Bulma | Gohan | Piccolo | Trunks |
-| ☠️ One Piece | Luffy | Zoro | Nami | Robin | Franky | Sanji |
-| 🦸 Marvel | Tony | Steve | Natasha | Bruce | Thor | Peter |
-| 🧪 Breaking Bad | Walter | Jesse | Mike | Gale | Gus | Saul |
-| ⚔️ Game of Thrones | Jon | Tyrion | Arya | Sam | Bran | Daenerys |
-| 🍥 Naruto | Naruto | Sasuke | Sakura | Shikamaru | Kakashi | Itachi |
+**Popular Themes:**
+
+🐉 **Dragon Ball Z** - Goku, Vegeta, Bulma, Gohan, Piccolo, Trunks
+☠️ **One Piece** - Luffy, Zoro, Nami, Robin, Franky, Sanji
+🦸 **Marvel** - Tony, Steve, Natasha, Bruce, Thor, Peter
+🧪 **Breaking Bad** - Walter, Jesse, Mike, Gale, Gus, Saul
+⚔️ **Game of Thrones** - Jon, Tyrion, Arya, Sam, Bran, Daenerys
+🍥 **Naruto** - Naruto, Sasuke, Sakura, Shikamaru, Kakashi, Itachi
 
 **When user names ANY series:**
 1. Pick 6 iconic characters that fit the roles
@@ -401,14 +411,12 @@ Ask: **"Now for the fun part! Let's theme your agent team. Name ANY series, movi
 ```
 Great choice! Here's your Team Avatar:
 
-| Role | Character | Why |
-|------|-----------|-----|
-| Coordinator | Aang | The Avatar, brings balance |
-| Backend | Toph | Earthbender, solid foundation |
-| DevOps | Katara | Waterbender, keeps things flowing |
-| Research | Sokka | Strategist, plans everything |
-| Architecture | Iroh | Wise, sees the big picture |
-| Deployment | Zuko | Redeemed, handles the heat |
+**Coordinator:** Aang - The Avatar, brings balance
+**Backend:** Toph - Earthbender, solid foundation
+**DevOps:** Katara - Waterbender, keeps things flowing
+**Research:** Sokka - Strategist, plans everything
+**Architecture:** Iroh - Wise, sees the big picture
+**Deployment:** Zuko - Redeemed, handles the heat
 
 Sound good?
 ```
@@ -686,32 +694,29 @@ With browser access + the user logged into GitHub, the bot can **automatically s
 
 **What Browser + GitHub OAuth can auto-setup:**
 
-| Service | Auto-Setup? | How Bot Does It |
-|---------|-------------|-----------------|
-| Railway | ✅ **YES** | Navigate → GitHub OAuth → Create project → Get API token from settings |
-| Supermemory | ✅ **YES** | Navigate → GitHub OAuth → Dashboard → Copy API key |
-| Vercel | ✅ **YES** | Navigate → GitHub OAuth → Settings → Create token |
-| Netlify | ✅ **YES** | Navigate → GitHub OAuth → User settings → New token |
-| Supabase | ✅ **YES** | Navigate → GitHub OAuth → Project settings → Copy keys |
-| PlanetScale | ✅ **YES** | Navigate → GitHub OAuth → Connection strings |
+**Services with Browser Auto-Setup:**
+- ✅ **Railway** - OAuth → Create project → Get API token
+- ✅ **Supermemory** - OAuth → Dashboard → Copy API key
+- ✅ **Vercel** - OAuth → Settings → Create token
+- ✅ **Netlify** - OAuth → User settings → New token
+- ✅ **Supabase** - OAuth → Project settings → Copy keys
+- ✅ **PlanetScale** - OAuth → Connection strings
 
 **What GitHub PAT alone can auto-setup (no browser needed):**
 
-| Integration | Auto-Setup? | What Bot Can Do |
-|-------------|-------------|-----------------|
-| Claw Control (fork) | ✅ Yes | Fork repo to user's GitHub automatically |
-| GitHub Webhooks | ✅ Yes | Configure webhooks for repos |
-| GitHub Actions | ✅ Yes | Enable/configure CI/CD workflows |
-| Repository Secrets | ✅ Yes | Manage encrypted secrets via API |
-| Issues/PRs | ✅ Yes | Create, manage, and track automatically |
+**GitHub PAT Enables (no browser needed):**
+- ✅ **Claw Control fork** - Fork repo to your GitHub
+- ✅ **Webhooks** - Configure webhooks for repos
+- ✅ **GitHub Actions** - Enable/configure CI/CD
+- ✅ **Repository Secrets** - Manage encrypted secrets
+- ✅ **Issues/PRs** - Create and track automatically
 
 **The Three Automation Tiers:**
 
-| Tier | Requirements | What Bot Can Do |
-|------|--------------|-----------------|
-| 🥉 Basic | Nothing | Guide user step-by-step manually |
-| 🥈 GitHub API | GitHub PAT | Automate all GitHub operations |
-| 🥇 **Full VIP** | Browser + GitHub Login | **Automate EVERYTHING** via OAuth |
+**Automation Tiers:**
+- 🥉 **Basic** (no tokens) - I guide you step-by-step manually
+- 🥈 **GitHub API** (PAT only) - Automate all GitHub operations
+- 🥇 **Full Automation** (Browser + GitHub) - Automate OAuth flows too
 
 **To unlock full automation:**
 1. User attaches Chrome extension (click OpenClaw toolbar icon, badge shows "ON")
@@ -723,7 +728,7 @@ With browser access + the user logged into GitHub, the bot can **automatically s
 2. ✅ Auto-retrieve API keys by navigating to dashboards
 3. ✅ Auto-configure all integrations end-to-end
 4. ✅ Connect services together (GitHub ↔ Railway ↔ Supermemory)
-5. ✅ Handle the ENTIRE setup with zero manual steps
+5. ✅ Handle complex setup flows automatically (once browser configured)
 
 ---
 
@@ -843,10 +848,9 @@ qmd search "your search query"
 
 **The bottom line:**
 
-| Feature | Without | With |
-|---------|---------|------|
-| Supermemory | I forget everything between sessions | I remember your preferences, decisions, and context |
-| QMD | I can only search the web | I can search YOUR personal knowledge base |
+**Memory Feature Comparison:**
+- **Supermemory:** Without it I forget everything between sessions. With it, I remember your preferences, decisions, and context!
+- **QMD:** Without it I can only search the web. With it, I can search YOUR personal knowledge base!
 
 Both are optional, but they make me significantly more useful. Set them up when you're ready - we can always add them later!
 
