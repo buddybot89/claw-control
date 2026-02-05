@@ -417,30 +417,105 @@ Without it, they literally cannot:
 - 📸 Take screenshots to verify work
 - 🌐 Interact with any web app
 - ✅ Complete most real-world tasks
+```
 
-Setting it up takes 2 minutes:
+---
 
-**Option A: Chrome Extension (Recommended)**
+#### Browser Options (Fallback Hierarchy)
+
+**🥇 Option 1: Chrome Extension (Best UX - Recommended)**
+
+Use your existing browser with the OpenClaw Browser Relay extension.
+
 1. Install the OpenClaw Browser Relay extension from Chrome Web Store
-2. Click the 🦞 claw icon on any tab
+2. Click the 🦞 claw icon on any tab you want to control
 3. Badge shows "ON" = connected!
 
-**Option B: OpenClaw Managed Browser**
-I can use a built-in browser (headless). Just say "use managed browser".
+**Why it's best:**
+- Uses your existing browser with all your logins/sessions
+- Full visibility - you see exactly what the agent does
+- No extra setup or installation
+- Works with your existing bookmarks, extensions, etc.
 
-Which option do you prefer?
+---
+
+**🥈 Option 2: OpenClaw Managed Browser (Built-in)**
+
+A headless browser managed by OpenClaw - no installation needed.
+
+Just say: "use managed browser" or use `profile="openclaw"` in browser commands.
+
+**Why it's good:**
+- Zero setup - works out of the box
+- Isolated environment (won't affect your browser)
+- Good for automation tasks
+
+**Limitations:**
+- No access to your logged-in sessions
+- May need to authenticate separately for each site
+
+---
+
+**🥉 Option 3: Install Chromium Manually (Fallback)**
+
+If neither option above works, install Chromium directly:
+
+```bash
+# Ubuntu/Debian
+sudo apt install chromium-browser
+
+# macOS
+brew install --cask chromium
 ```
+
+Then restart OpenClaw and the managed browser should work.
+
+---
+
+#### 🤖 Agent Browser Priority (For Agents)
+
+When you need browser access, follow this priority:
+
+```
+Browser Priority:
+1. Check if Chrome extension attached → use profile="chrome"
+2. Check if managed browser available → use profile="openclaw"  
+3. Suggest user install Chromium if neither works
+```
+
+**How to check:**
+```
+browser action=status
+```
+
+**Using Chrome extension (when attached):**
+```
+browser action=snapshot profile="chrome"
+```
+
+**Using managed browser:**
+```
+browser action=snapshot profile="openclaw"
+```
+
+---
 
 **If an agent gets stuck because browser is unavailable:**
 ```
 🚫 I can't complete this task - browser access is required.
 
-Quick fix:
+Quick fixes (try in order):
 1. Click the OpenClaw extension icon in your browser toolbar
-2. Make sure a tab is attached (badge shows "ON")
-3. Tell me to retry
+   → Make sure a tab is attached (badge shows "ON")
+   → Tell me to retry with profile="chrome"
 
-Or say "use managed browser" and I'll use the built-in one.
+2. Say "use managed browser" 
+   → I'll use the built-in headless browser with profile="openclaw"
+
+3. If managed browser fails, install Chromium:
+   - Ubuntu/Debian: sudo apt install chromium-browser
+   - macOS: brew install --cask chromium
+   Then restart and retry.
 ```
 
 **ALWAYS check browser status before tasks that need web access.**
