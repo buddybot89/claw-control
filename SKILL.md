@@ -655,6 +655,5 @@ After setup, ALWAYS:
 ## Files
 
 - `SKILL.md` - This file
-- `clawhub.json` - Skill manifest
 - `templates/update_dashboard.js` - Status update script
 - `references/themes.md` - Full theme character lists

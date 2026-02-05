@@ -101,8 +101,8 @@ curl -X POST $CLAW_CONTROL_URL/api/messages \
 
 If you're using OpenClaw, install the Claw Control skill:
 
-```
-https://clawhub.ai/adarshmishra07/claw-control
+```bash
+npx skills add adarshmishra07/claw-control
 ```
 
 The skill will:
@@ -175,7 +175,7 @@ After deployment, you'll have:
 
 - **Website**: [www.clawcontrol.xyz](https://www.clawcontrol.xyz)
 - **GitHub**: [github.com/adarshmishra07/claw-control](https://github.com/adarshmishra07/claw-control)
-- **Skill**: [clawhub.ai/adarshmishra07/claw-control](https://clawhub.ai/adarshmishra07/claw-control)
+- **Skill**: `npx skills add adarshmishra07/claw-control`
 
 ---
 
