@@ -251,11 +251,45 @@ If they already have it running, collect:
 - Frontend URL  
 - API Key (if auth enabled)
 
-Store these in environment:
-```bash
-export CLAW_CONTROL_URL="<backend_url>"
-export CLAW_CONTROL_API_KEY="<api_key>"  # if set
+---
+
+### ⚠️ CRITICAL: Store & Test API Connection
+
+**YOU MUST DO THIS BEFORE PROCEEDING:**
+
+1. **Ask for the Backend URL:**
 ```
+I need your Claw Control backend URL to connect.
+Example: https://claw-control-backend-xxxx.up.railway.app
+
+What's your backend URL?
+```
+
+2. **Ask for API Key (if they set one):**
+```
+Did you set an API_KEY when deploying? 
+If yes, share it. If no or unsure, we'll try without.
+```
+
+3. **Store in TOOLS.md:**
+```markdown
+## Claw Control
+- Backend URL: <their_url>
+- API Key: <their_key or "none">
+```
+
+4. **Test the connection:**
+```bash
+curl -s <BACKEND_URL>/api/agents
+```
+
+5. **If test fails, DO NOT PROCEED.** Help them debug.
+
+**Without the backend URL, you CANNOT:**
+- Update agent names/themes
+- Create or update tasks
+- Post to the agent feed
+- Track agent status
 
 ---
 
@@ -304,6 +338,37 @@ Great choice! Here's your Team Avatar:
 
 Sound good?
 ```
+
+### Step 2b: Apply the Theme via API
+
+**⚠️ YOU MUST MAKE THESE API CALLS to actually apply the theme:**
+
+After the user picks a theme, update each agent:
+
+```bash
+# Update agent 1 (Coordinator)
+curl -X PUT <BACKEND_URL>/api/agents/1 \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <API_KEY>" \
+  -d '{"name": "Goku", "role": "Coordinator"}'
+
+# Update agent 2 (Backend)
+curl -X PUT <BACKEND_URL>/api/agents/2 \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <API_KEY>" \
+  -d '{"name": "Vegeta", "role": "Backend"}'
+
+# Repeat for agents 3-6 with the theme characters
+```
+
+**Verify changes applied:**
+```bash
+curl -s <BACKEND_URL>/api/agents
+```
+
+If the response shows the new names, the theme is applied! If not, debug before proceeding.
+
+---
 
 ### Step 3: Main Character Selection
 
