@@ -712,34 +712,40 @@ curl -s <BACKEND_URL>/api/agents \
 ```
 ✅ Should return list of agents with your theme names (not "Coordinator", "Backend" defaults)
 
-### 2. Create a Test Task
+### 2. Create "Team Introductions" Task
 ```bash
 curl -X POST <BACKEND_URL>/api/tasks \
   -H "Content-Type: application/json" \
   -H "x-api-key: <API_KEY>" \
-  -d '{"title": "🧪 Setup Verification Test", "description": "This task verifies Claw Control is working correctly. You can delete this!", "status": "completed"}'
+  -d '{"title": "👋 Team Introductions", "description": "Introduce the team and explain how the system works.", "status": "completed", "agent_id": 1}'
 ```
 ✅ Should return the created task with an ID
 
-### 3. Post a Test Message to Feed
+### 3. Post Team Introduction to Feed
+
+Post a comprehensive introduction message (customize with actual theme names):
+
 ```bash
 curl -X POST <BACKEND_URL>/api/messages \
   -H "Content-Type: application/json" \
   -H "x-api-key: <API_KEY>" \
-  -d '{"agent_id": 1, "content": "🦞 **Claw Control Connected!** Setup verification successful."}'
+  -d '{
+    "agent_id": 1,
+    "content": "# 👋 Meet Your Team!\n\n## The Squad\n- **[Coordinator Name]** (me!) - Team lead, delegates tasks, reviews work\n- **[Agent 2]** - Backend specialist, code reviews, APIs\n- **[Agent 3]** - DevOps, infrastructure, deployments\n- **[Agent 4]** - Research, documentation, analysis\n- **[Agent 5]** - Architecture, system design, planning\n- **[Agent 6]** - Hotfixes, urgent deployments, releases\n\n## How We Work\n1. All tasks go through this board\n2. I delegate to the right specialist\n3. They do the work and report back\n4. I review and mark complete\n\n## Want More Agents?\nJust tell me: *\"I need a specialist for [X]\"* and I will create one!\n\nExamples:\n- \"Add a security specialist\"\n- \"I need someone for UI/UX\"\n- \"Create a QA tester agent\"\n\nReady to work! 🦞"
+  }'
 ```
 ✅ Should return the created message
 
 ### 4. Ask User to Check Dashboard
 ```
-I just created a test task and posted a message. 
+I just completed the Team Introductions task! 
 
 Please check your dashboard: <FRONTEND_URL>
 
 You should see:
-- ✅ Your themed agent names (not the defaults)
-- ✅ A "🧪 Setup Verification Test" task in Completed
-- ✅ A "🦞 Claw Control Connected!" message in the feed
+- ✅ Your themed agent names in the sidebar
+- ✅ A "👋 Team Introductions" task marked complete
+- ✅ A welcome message in the feed explaining your team
 
 Can you confirm everything looks right?
 ```
