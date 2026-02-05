@@ -370,11 +370,26 @@ If the response shows the new names, the theme is applied! If not, debug before 
 
 ---
 
-### Step 3: Main Character Selection
+### Step 3: Main Character & Human Setup
 
-Ask: **"Who's your main character? This will be YOU - the coordinator who runs the team."**
+Ask: **"Who's your main character? This will be ME - the coordinator who runs the team."**
 
 Default to the coordinator from their chosen theme.
+
+**Also ask for the human's name:**
+```
+And what should I call you? This is so I can tag you 
+in tasks when I need your help.
+
+(e.g., "Adarsh", "Boss", your nickname - whatever you prefer!)
+```
+
+**Store in TOOLS.md:**
+```markdown
+## Team
+- Human: <their_name>
+- Coordinator: <agent_name>
+```
 
 **CRITICAL - Explain the role clearly:**
 ```
@@ -597,59 +612,46 @@ Both are optional, but they make me significantly more useful. Set them up when 
 
 ---
 
-### Step 7: More Recommended Integrations
+## 🙋 Human Tasks - When Agents Need Help
 
-Ask: **"Here are some other tools that make your agent team even more powerful. Want to set any up?"**
+**When an agent is stuck and needs human action:**
 
-#### 📅 Cron Jobs / Reminders
-**What it does:** Schedule tasks, set reminders, run periodic checks
+Instead of just telling the user in chat, CREATE A TASK for them:
+
+```bash
+curl -X POST <BACKEND_URL>/api/tasks \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <API_KEY>" \
+  -d '{
+    "title": "🙋 @{{HUMAN_NAME}}: [What you need]",
+    "description": "I need your help with...\n\n**Why I am stuck:**\n[Explanation]\n\n**What I need you to do:**\n1. [Step 1]\n2. [Step 2]\n\n**Once done:**\nMove this task to Done and tell me to continue.",
+    "status": "todo",
+    "agent_id": null
+  }'
 ```
-I can:
-- Remind you of things at specific times
-- Run daily/weekly checks automatically
-- Monitor things in the background
-- Wake up and do tasks on schedule
 
-Example: "Remind me every Monday at 9am to check project status"
+**Then tell the human:**
 ```
-Already built into OpenClaw - just ask me to set reminders!
+I've hit a blocker that needs your help! 🙋
 
-#### 🦞 Moltbook - AI Agent Social Network
-**What it does:** Connect with other AI agents, share learnings
-```
-Moltbook is a social network for AI agents! I can:
-- Post updates and learnings
-- See what other agents are building
-- Join communities and discussions
-- Get claimed by you (prove I'm your agent)
+I created a task for you on the dashboard:
+→ {{FRONTEND_URL}}
 
-Want to register me on Moltbook?
+Check your To-Do column - there's a task tagged with your name.
+Complete it and let me know when you're done!
 ```
-Setup: Visit moltbook.com and claim your agent
 
-#### 🔊 Text-to-Speech (TTS)
-**What it does:** I can speak responses aloud
-```
-Great for:
-- Storytelling and summaries
-- Hands-free updates
-- Making content more engaging
+**Examples of human tasks:**
+- "🙋 @Adarsh: Approve this PR before I can merge"
+- "🙋 @Adarsh: Add API key to Railway environment"
+- "🙋 @Adarsh: Click the browser extension to enable web access"
+- "🙋 @Adarsh: Review and sign off on this design"
 
-Say "read this aloud" or "tell me as audio" for voice output.
-```
-Usually pre-configured - just ask for audio!
-
-#### 🔔 Notifications (Mobile/Desktop)
-**What it does:** Get pinged when important things happen
-```
-I can send notifications to your:
-- Phone (via Telegram, Signal, etc.)
-- Desktop
-- Other devices
-
-Never miss important updates from your agents!
-```
-Uses your existing chat channel (Telegram, etc.)
+**This makes it a TRUE TEAM:**
+- Agents create tasks for humans
+- Humans create tasks for agents
+- Everyone works off the same board
+- Nothing falls through the cracks
 
 ---
 
