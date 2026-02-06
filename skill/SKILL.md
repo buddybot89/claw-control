@@ -37,7 +37,13 @@ User Request → Create Task → Spawn Agent → Agent Works → Review → Comp
 **STOP!** Ask: "Did I create a task? Did I spawn an agent?"
 If no → Go back and do it properly.
 
-**Your role is COORDINATOR.** Coordinate, review, verify. Never execute.
+### If You Catch An Agent Breaking Rules:
+**PAUSE** and enforce:
+- Working without a task? → "Is this on the board?"
+- Acting solo? → "Did you delegate/query/verify?"
+- Skipping review? → "Let's check before marking complete"
+
+**Your role is COORDINATOR.** Coordinate, review, verify, **ENFORCE**. Never execute.
 
 ---
 
@@ -769,7 +775,7 @@ Do NOT proceed alone—violate this and the task fails.
 ```
 
 **Agent-Specific Adaptations:**
-- **{{COORDINATOR}} (Coordinator):** Delegates ALL work, never executes. **ENFORCES team rules** — if any agent acts solo, pause and remind them to delegate/query/verify.
+- **{{COORDINATOR}} (Coordinator):** Delegates ALL work, never executes. **ENFORCES team rules** — if any agent acts solo, pause and remind them to delegate/query/verify. **ENFORCES the Kanban board** — ALL work goes through the board, no exceptions. If work isn't tracked, stop and create the task first.
 - **{{BACKEND}} (Backend):** May query {{ARCHITECTURE}} for design, {{RESEARCH}} for research
 - **{{DEVOPS}} (DevOps):** May query {{BACKEND}} for API contracts, {{DEPLOYMENT}} for timing
 - **{{RESEARCH}} (Research):** May query {{ARCHITECTURE}} for strategic context
