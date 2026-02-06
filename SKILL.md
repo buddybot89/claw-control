@@ -1,6 +1,5 @@
 ---
 name: claw-control
-description: Complete AI agent operating system setup with Kanban task management. Use when setting up multi-agent coordination, task tracking, or configuring an agent team. Includes theme selection (DBZ, One Piece, Marvel, etc.), workflow enforcement (all tasks through board), browser setup, GitHub integration, and memory enhancement (Supermemory, QMD).
 ---
 
 # Claw Control - Agent Operating System
@@ -15,7 +14,6 @@ Complete setup for AI agent coordination with real-time Kanban dashboard.
 4. **Configure agent behavior** - Update AGENTS.md and SOUL.md
 5. **Setup browser** - Required for autonomous actions
 6. **Setup GitHub** - Enable autonomous deployments
-7. **Enhance memory** - Integrate Supermemory and QMD
 
 ---
 
@@ -282,7 +280,6 @@ Without it, they literally cannot:
 - ✅ Complete most real-world tasks
 
 🚀 PLUS - Browser + GitHub Login unlocks FULL AUTOMATION:
-- 🔑 Auto-create accounts on Railway, Vercel, Supermemory via GitHub OAuth
 - 📋 Auto-retrieve API keys by navigating to dashboards
 - ⚡ Zero-click setup - I handle EVERYTHING through the browser!
 ```
@@ -293,7 +290,6 @@ When you have browser attached AND are logged into GitHub:
 ```
 I can automatically set up ANY service that supports "Sign in with GitHub":
 
-1. I navigate to the service (Railway, Supermemory, Vercel, etc.)
 2. I click "Sign in with GitHub"
 3. OAuth auto-authorizes (you're already logged in!)
 4. I navigate to the API keys / settings page
@@ -464,7 +460,6 @@ With browser access + the user logged into GitHub, the bot can **automatically s
 **The Magic Flow:**
 ```
 1. User is logged into GitHub in browser (Chrome extension attached)
-2. Bot navigates to Railway/Supermemory/Vercel dashboard
 3. Bot clicks "Sign in with GitHub"  
 4. OAuth authorizes automatically (user already authenticated)
 5. Bot navigates to API keys / tokens page
@@ -477,7 +472,6 @@ With browser access + the user logged into GitHub, the bot can **automatically s
 | Service | Auto-Setup? | How Bot Does It |
 |---------|-------------|-----------------|
 | Railway | ✅ **YES** | Navigate → GitHub OAuth → Create project → Get API token from settings |
-| Supermemory | ✅ **YES** | Navigate → GitHub OAuth → Dashboard → Copy API key |
 | Vercel | ✅ **YES** | Navigate → GitHub OAuth → Settings → Create token |
 | Netlify | ✅ **YES** | Navigate → GitHub OAuth → User settings → New token |
 | Supabase | ✅ **YES** | Navigate → GitHub OAuth → Project settings → Copy keys |
@@ -504,13 +498,11 @@ With browser access + the user logged into GitHub, the bot can **automatically s
 **To unlock full automation:**
 1. User attaches Chrome extension (click OpenClaw toolbar icon, badge shows "ON")
 2. User logs into GitHub in that browser tab
-3. Bot can now setup Railway, Supermemory, Vercel, etc. automatically!
 
 **When user has browser + GitHub access, the bot should:**
 1. ✅ Auto-create accounts on any service with GitHub OAuth
 2. ✅ Auto-retrieve API keys by navigating to dashboards
 3. ✅ Auto-configure all integrations end-to-end
-4. ✅ Connect services together (GitHub ↔ Railway ↔ Supermemory)
 5. ✅ Handle the ENTIRE setup with zero manual steps
 
 ---
@@ -538,117 +530,9 @@ You should see `💾 session-memory` with a checkmark.
 
 ---
 
-### Step 7: Memory Enhancement (Optional but Awesome!)
+### Step 7: Memory Enhancement (Optional)
 
-Ask: **"Want to supercharge my memory? I have two optional upgrades that make me way more helpful:"**
-
----
-
-#### 🧠 Supermemory - Cloud Long-term Memory (Official OpenClaw Plugin)
-
-> ⚠️ **Requires Supermemory Pro or higher** - The OpenClaw plugin needs a paid plan.
-> Free tier won't work. Check pricing at [supermemory.ai/pricing](https://supermemory.ai/pricing)
-
-**What it does:**
-Supermemory gives me persistent memory that survives across sessions. The official OpenClaw plugin handles everything automatically - zero manual work!
-
-**Why you'll love it:**
-- 📝 **Auto-Recall**: Before every response, I automatically pull relevant memories
-- 🧩 **Auto-Capture**: After every conversation, memories are extracted and stored
-- 🔄 **User Profile**: I build a persistent profile of your preferences and context
-- 💡 **Zero effort**: Once set up, it just works in the background!
-
-**Features unlocked:**
-- `/remember [text]` - Manually save something to memory
-- `/recall [query]` - Search your memories
-- AI Tools: `supermemory_store`, `supermemory_search`, `supermemory_forget`, `supermemory_profile`
-- CLI: `openclaw supermemory search/profile/wipe`
-
----
-
-**Setup (2 minutes):**
-
-**Step 1: Get your API key**
-```
-Go to console.supermemory.ai → API Keys → Create New Key
-(Free tier: 1M tokens, 10K searches)
-```
-
-**Step 2: Install the plugin**
-```bash
-openclaw plugins install @supermemory/openclaw-supermemory
-```
-
-**Step 3: Enable with your API key**
-
-Share your API key and I'll configure it:
-```bash
-openclaw config set plugins.entries.openclaw-supermemory.enabled true
-openclaw config set plugins.entries.openclaw-supermemory.config.apiKey "sm_your_key_here"
-```
-
-Or add to `~/.openclaw/openclaw.json`:
-```json
-{
-  "plugins": {
-    "slots": {
-      "memory": "openclaw-supermemory"
-    },
-    "entries": {
-      "openclaw-supermemory": {
-        "enabled": true,
-        "config": {
-          "apiKey": "sm_...",
-          "autoRecall": true,
-          "autoCapture": true,
-          "maxRecallResults": 10
-        }
-      }
-    }
-  }
-}
-```
-
-**Important:** The `plugins.slots.memory` setting tells OpenClaw to use Supermemory instead of the default memory-core plugin.
-
-**Step 4: Restart OpenClaw**
-```bash
-openclaw gateway restart
-```
-
-**That's it!** Memory now works automatically across every conversation.
-
----
-
-**🆓 Free Alternative: memory-lancedb (Local)**
-
-If you don't want to pay for Supermemory Pro, use the built-in LanceDB plugin instead:
-
-```json
-{
-  "plugins": {
-    "slots": {
-      "memory": "memory-lancedb"
-    },
-    "entries": {
-      "memory-lancedb": {
-        "enabled": true
-      }
-    }
-  }
-}
-```
-
-This gives you auto-recall and auto-capture locally (no cloud, no cost).
-
----
-
-**What this enables:**
-- I automatically remember your preferences, decisions, and context
-- Before every response, I recall relevant past conversations
-- After every chat, important info is captured for later
-- "Remember that I prefer TypeScript over JavaScript" - auto-stored!
-- "What did we decide about the database?" - auto-recalled!
+Ask: **"Want to enhance my memory with local note search?"**
 
 ---
 
@@ -695,7 +579,6 @@ qmd search "your search query"
 
 | Feature | Without | With |
 |---------|---------|------|
-| Supermemory | I forget everything between sessions | I remember your preferences, decisions, and context |
 | QMD | I can only search the web | I can search YOUR personal knowledge base |
 
 Both are optional, but they make me significantly more useful. Set them up when you're ready - we can always add them later!
@@ -976,7 +859,6 @@ Team: {{AGENT_LIST}}
 ✅ Session memory hook enabled - conversations auto-save!
 {{#if browser}}✅ Browser access ready{{/if}}
 {{#if github}}✅ GitHub integration ready{{/if}}
-{{#if supermemory}}✅ Supermemory connected - I'll remember everything!{{/if}}
 {{#if qmd}}✅ QMD search ready - I can search your docs!{{/if}}
 
 From now on, I operate as {{COORDINATOR}}:
