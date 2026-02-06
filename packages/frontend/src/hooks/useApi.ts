@@ -168,12 +168,14 @@ export function useTasks() {
 
 /**
  * Hook for fetching and managing agent messages.
+ * Includes polling every 5 seconds for realtime updates.
  * @returns Object with messages array, loading state, and add handler
  */
 export function useMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const lastIdRef = useRef<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -181,7 +183,14 @@ export function useMessages() {
       if (!res.ok) throw new Error('Failed to fetch messages');
       const data = await res.json();
       const rawMessages = Array.isArray(data) ? data : data.messages || [];
-      setMessages(rawMessages.map(transformMessage));
+      const transformed = rawMessages.map(transformMessage);
+      
+      // Track the last message ID to detect new messages
+      if (transformed.length > 0) {
+        lastIdRef.current = transformed[transformed.length - 1].id;
+      }
+      
+      setMessages(transformed);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
@@ -190,13 +199,29 @@ export function useMessages() {
     }
   }, []);
 
+  // Initial fetch
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
 
+  // Polling every 5 seconds for realtime updates
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      fetchMessages();
+    }, 5000);
+
+    return () => clearInterval(pollInterval);
+  }, [fetchMessages]);
+
   /** Adds a new message, keeping only the last 200 messages */
   const addMessage = useCallback((msg: Message) => {
-    setMessages(prev => [...prev.slice(-199), msg]);
+    setMessages(prev => {
+      // Avoid duplicates by checking if message ID already exists
+      if (prev.some(m => m.id === msg.id)) {
+        return prev;
+      }
+      return [...prev.slice(-199), msg];
+    });
   }, []);
 
   return { messages, setMessages, loading, error, refetch: fetchMessages, addMessage };
