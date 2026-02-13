@@ -14,7 +14,7 @@ services:
       dockerfile: Dockerfile
     container_name: claw-control-backend
     environment:
-      DATABASE_URL: postgresql://claw:clawcontrol@qogookcsgckokc800kgssg0c:5432/claw_control
+      DATABASE_URL: postgresql://claw:clawcontrol@192.168.1.157:5438/claw_control
       PORT: 3001
     volumes:
       - ./config:/app/config:ro  # Mount config directory (read-only)
