@@ -7,11 +7,11 @@ RUN npm ci
 COPY . .
 RUN npm run build --workspace=@claw-control/frontend
 
-# Production - use http-server with runtime config injection
-FROM node:22-alpine
-RUN npm install -g http-server
-COPY --from=builder /app/packages/frontend/dist /app
-COPY packages/frontend/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-WORKDIR /app
-CMD ["/app/entrypoint.sh"]
+# Production - nginx with basic auth
+FROM nginx:alpine
+RUN apk add --no-cache apache2-utils
+COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html
+COPY packages/frontend/nginx.conf /etc/nginx/templates/default.conf.template
+COPY packages/frontend/entrypoint-nginx.sh /docker-entrypoint.d/40-config.sh
+RUN chmod +x /docker-entrypoint.d/40-config.sh
+EXPOSE 80
