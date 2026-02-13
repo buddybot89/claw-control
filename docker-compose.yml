@@ -19,7 +19,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5438:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-claw}"]
       interval: 5s
@@ -48,11 +48,12 @@ services:
   # Frontend
   frontend:
     build:
-      context: ./packages/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: packages/frontend/Dockerfile
     container_name: claw-control-frontend
     environment:
-      VITE_API_URL: http://localhost:3001
+      VITE_API_URL: https://claw-control-api.escalator.dev
+      PORT: "80"
     ports:
       - "5173:80"
     depends_on:
