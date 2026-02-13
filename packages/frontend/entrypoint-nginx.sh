@@ -20,11 +20,21 @@ if [ -n "$AUTH_USER" ] && [ -n "$AUTH_PASSWORD" ]; then
   htpasswd -bc /etc/nginx/.htpasswd "$AUTH_USER" "$AUTH_PASSWORD"
   echo "Basic auth enabled for user: $AUTH_USER"
 else
-  # Create empty htpasswd and disable auth
-  echo "" > /etc/nginx/.htpasswd
-  export AUTH_REALM="off"
+  # Disable auth by overwriting nginx config without auth directives
+  cat > /etc/nginx/conf.d/default.conf <<'NGINX'
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    location = /health {
+        return 200 'ok';
+        add_header Content-Type text/plain;
+    }
+}
+NGINX
   echo "Basic auth disabled (no AUTH_USER/AUTH_PASSWORD set)"
 fi
-
-# Set default realm
-export AUTH_REALM="${AUTH_REALM:-Claw Control}"
